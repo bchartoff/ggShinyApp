@@ -1,0 +1,8 @@
+.span3 > input{
+	width: 80%;
+}
+
+.span3 > .selectize-control > .selectize-input{
+	width: 92%;
+	height: 32px;
+}
