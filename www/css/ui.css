@@ -1,8 +1,25 @@
 .span3 > input{
-	width: 80%;
+	display: inline-block;
+	/*float: left;*/
+	width: 60%;
+	margin-left: 4%;
 }
 
-.span3 > .selectize-control > .selectize-input{
-	width: 92%;
+.span3 > .selectize-control > .selectize-input
+{
+	display: inline-block;
+	width: 70%;
 	height: 32px;
+	margin-left: 4%;
+
+}
+
+.span3 > label{
+	display: inline;
+	width: 22%;
+	float: left;
+	position: relative;
+	top: 6px;
+	margin-right: 2%;
+	font-weight: bold;
 }

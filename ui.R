@@ -1,5 +1,9 @@
 library(shiny)
 library(ggplot2)
+library(extrafont)
+
+# source('lib/theme_default.R')
+
 
 jscolorInput <- function(id, default) {
   tagList(
@@ -16,19 +20,125 @@ gg_color_hue <- function(n) {
   hcl(h=hues, l=65, c=100)[1:n]
 }
 
+promote_list_item <- function(list,item){
+  #delete item
+  list[which(list==item)] <- NULL
+  #append at start of list
+  list <- c(item,list)
+  list
+}
+
+lineOpts <- function(title,element,width){
+  col <- column(width,
+          h4(title),
+          selectizeInput(paste(element,"Linetype",sep=""),
+            label = "Type: ", 
+            choices = promote_list_item(lineTypes, theme_current[element][[1]]["linetype"][[1]]),
+            options = list(
+              dropdownParent = 'body',
+              render = I(sprintf(
+              "{
+                  option: function(item, escape) {
+                    return '<div><img ' +
+                        'src=\"images/lineTypes/' + item.value + '.png\" /></div>';
+                  }
+              }"
+            )))),
+          numericInput(paste(element,"Size",sep=""),'Stroke: ',value= theme_current[element][[1]]["size"][[1]]),
+          tags$label("Color: "),
+          jscolorInput(paste(element,"Color",sep=""), theme_current[element][[1]]["colour"][[1]]),
+          selectizeInput(paste(element,"Lineend",sep=""),
+            label = "End: ",
+            choices = promote_list_item(lineEnds, theme_current[element][[1]]["linened"][[1]]),
+            options = list(
+              dropdownParent = 'body',
+              render = I(sprintf(
+              "{
+                  option: function(item, escape) {
+                    return '<div><img ' +
+                        'src=\"images/lineEnds/' + item.value + '.png\" /></div>';
+                  }
+              }"
+          ))))
+        )
+  col
+}
+
+rectOpts <- function(title,element,width){
+  col <- column(width,
+          h4(title),
+          selectizeInput(paste(element,"Linetype",sep=""),
+            label = "Type: ", 
+            choices = promote_list_item(lineTypes, theme_current[element][[1]]["linetype"][[1]]),
+            options = list(
+              dropdownParent = 'body',
+              render = I(sprintf(
+              "{
+                  option: function(item, escape) {
+                    return '<div><img ' +
+                        'src=\"images/lineTypes/' + item.value + '.png\" /></div>';
+                  }
+              }"
+            )))),
+          numericInput(paste(element,"Size",sep=""),'Stroke: ',value= theme_current[element][[1]]["size"][[1]]),
+          tags$label("Fill: "),
+          jscolorInput(paste(element,"Fill",sep=""), theme_current[element][[1]]["fill"][[1]]),
+          tags$label("Stroke: "),
+          jscolorInput(paste(element,"Color",sep=""), theme_current[element][[1]]["colour"][[1]])
+        )
+  col
+}
+
+fontOpts <- function(title,element,width){
+   col <- column(width,
+          h4(title),
+           selectizeInput("font",
+            label="font",
+            choices=fonts()
+            ),
+          numericInput("rectSize",'Stroke: ',value= theme_current$element$size),
+          tags$label("Fill: "),
+          jscolorInput("rectFill", theme_current$element$fill),
+          tags$label("Stroke: "),
+          jscolorInput("rectColor", theme_current$element$colour)
+        )
+  col
+}
+
+theme_current <- theme_default()
 nineColors <- gg_color_hue(9)
 
-
-
 dataset <- diamonds
-lineTypes <- c("solid","blank","longdash","dotted","dashed","dotdash","twodash","F1","4C88C488","1F","12345678")
-lineEnds <- c("butt","round","square")
+lineTypes <- list(0,1,2,3,4,5,6)
+# ,"longdash","dotted","dashed","dotdash","twodash","F1","4C88C488","1F","12345678")
+lineEnds <- list("butt","round","square")
+themes <- list("default","grey","bw","calc","economist","excel","few","fivethirtyeight","gdocs","solarized","stata","tufte","wsj")
  
 shinyUI(fluidPage(theme = "css/main.css",
  
   headerPanel("ggplot2 Theme Builder"),
 
   navlistPanel(
+    tabPanel("Theme Builder Settings",
+      fluidRow(
+        column(12,
+          selectizeInput("currentTheme",
+            label = "Theme: ", 
+            choices = themes,
+            options = list(
+              dropdownParent = 'body'
+            )),
+          selectInput("sampleChart", label = "Sample chart Type", 
+            choices = list( "Bar chart: 1 color" = 1,
+                          "Bar chart: 3 colors" = 2,
+                          "Bar chart: 5 colors" = 3,
+                          "Scatter plot: 3 colors" = 4,
+                          "Scatter plot: 9 colors" = 5,
+                          "Line chart: 3 colors" = 6), selected = 2)
+
+        )
+      )
+    ),
     tabPanel("Global color palette",
       fluidRow(
         column(4,
@@ -50,43 +160,15 @@ shinyUI(fluidPage(theme = "css/main.css",
     ),
     tabPanel("Parent Elements",
       fluidRow(
-        column(3,
-          h4("All Lines"),
-          selectizeInput("lineType",
-            label = "type: ", 
-            choices = lineTypes,
-            options = list(render = I(sprintf(
-              "{
-                  option: function(item, escape) {
-                    return '<div><img ' +
-                        'src=\"images/lineTypes/' + item.value + '.png\" /></div>';
-                  }
-              }"
-            )))),
-          numericInput("lineSize",'stroke: ',value= theme_grey()$line$size),
-          div("color: "),
-          jscolorInput("lineColor", "#000000"),
-          selectizeInput("lineEnd",
-            label = "end: ",
-            choices = lineEnds,
-            options = list(render = I(sprintf(
-              "{
-                  option: function(item, escape) {
-                    return '<div><img ' +
-                        'src=\"images/lineEnds/' + item.value + '.png\" /></div>';
-                  }
-              }"
-          ))))
-        ),
-        column(3,
-          h4("All Rectangles"),
-          numericInput("lineSizae",'stroke',value=NULL),
-          numericInput("lineSizae",'stroke',value=NULL),
-          numericInput("lineSizae",'stroke',value=NULL)
-        ),
+        lineOpts("All Lines","line",3),
+        rectOpts("All Rectangles","rect",3),
+        
         column(3,
           h4("All Text"),
-          numericInput("lineSizae",'stroke',value=NULL),
+          selectizeInput("tmp",
+            label="tmp",
+            choices=fonts()
+            ),
           numericInput("lineSizae",'stroke',value=NULL),
           numericInput("lineSizae",'stroke',value=NULL)
         ),
@@ -105,14 +187,6 @@ shinyUI(fluidPage(theme = "css/main.css",
     tabPanel("Facet Labels"),
     tabPanel("The rest",
       jscolorInput("plotBgColor", "#000000"),
-
-      selectInput("sampleChart", label = "Sample chart Type", 
-          choices = list( "Bar chart: 1 color" = 1,
-                          "Bar chart: 3 colors" = 2,
-                          "Bar chart: 5 colors" = 3,
-                          "Scatter plot: 3 colors" = 4,
-                          "Scatter plot: 9 colors" = 5,
-                          "Line chart: 3 colors" = 6), selected = 2),
       numericInput('plotWidth', 'Plot Width', value = 600),
       div('x'),
       numericInput('plotHeight', 'Plot Height', value = 600)

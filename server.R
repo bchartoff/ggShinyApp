@@ -3,6 +3,7 @@ library('ggplot2')
 library('reshape2')
 
 source('lib/grid/unit.R')
+source('lib/theme_default.R')
  
 shinyServer(function(input, output) {
 
@@ -53,6 +54,7 @@ shinyServer(function(input, output) {
     c7 <- col2rgb(input$palColor7)
     c8 <- col2rgb(input$palColor8)
     c9 <- col2rgb(input$palColor9)
+
 
 
 
@@ -227,61 +229,76 @@ shinyServer(function(input, output) {
   }
 
 
- 
-  dataset <- reactive({
-    diamonds[sample(nrow(diamonds), input$sampleSize),]
-  })
+  inTheme <- reactive({
+        paste("theme",input$currentTheme,sep="_")
+        # theme_set(inThemeFunc())
+    })
  
   output$plot <- renderPlot({
 
-    # theme_new <- theme_set(theme_grey())
-    theme_new <- theme(
+          # tmp <-  get(paste("theme",inTheme,sep="_"),mode="function")
+          # theme_set(tmp())
+    theme_set(get(inTheme(),mode="function")())
+    # theme_set(get(inTheme,mode="function")())
+    # theme_set(Atheme())
+
+    # if (tmp == "grey"){
+    #   theme_set(theme_grey())
+    # }
+    # else if (tmp == "default"){
+    #   theme_set(theme_default())
+    # }
 
 
+
+    # theme_set(theme_default)
+    theme_update(
 #####################################################################################################################################################################################################################################################################
-
-      rect = element_rect(fill = "white", colour = "black", size = 0.5, linetype = 1),
-      text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
-      axis.text = element_text(size = rel(0.8), colour = "grey50"),
-      strip.text = element_text(size = rel(0.8)), axis.line = element_blank(),
-      axis.text.x = element_text(vjust = 1),
-      axis.text.y = element_text(hjust = 1),
-      axis.ticks = element_line(colour = NULL),
-      axis.title.x = element_text(),
-      axis.title.y = element_text(angle = 90),
-      axis.ticks.length = unit(0.15, "cm"),
-      axis.ticks.margin = unit(0.1,     "cm"),
-      legend.background = element_rect(colour = NA),
-      legend.margin = unit(0.2, "cm"),
-      legend.key = element_rect(fill = "grey95", colour = "white"),
-      legend.key.size = unit(1.2, "lines"),
-      legend.key.height = NULL, legend.key.width = NULL,
-      legend.text = element_text(size = rel(0.8)),
-      legend.text.align = NULL,
-      legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0),
-      legend.title.align = NULL,
-      legend.position = "right",
-      legend.direction = NULL,
-      legend.justification = "center",
-      legend.box = NULL,
-      panel.background = element_rect(fill = "grey90", colour = NA),
-      panel.border = element_blank(),
-      panel.grid.major = element_line(colour = "white"),
-      panel.grid.minor = element_line(colour = "grey95", size = 0.25),
-      panel.margin = unit(0.25, "lines"),
-      panel.margin.x = NULL,
-      panel.margin.y = NULL,
-      strip.background = element_rect(fill = "grey80", colour = NA),
-      strip.text.x = element_text(),
-      strip.text.y = element_text(angle = -90),
-      plot.background = element_rect(colour = "white"),
-      plot.title = element_text(size = rel(1.2)),
-      plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
-      line = element_line(size=input$lineSize, color = input$lineColor, linetype = input$lineType, lineend = input$lineEnd),
-      complete = TRUE
+      line = element_line(size=input$lineSize, color = input$lineColor, linetype = as.integer(input$lineLinetype), lineend = input$lineLineend),
+      rect = element_rect(fill = input$rectFill, colour = input$rectColor, size = input$rectSize, linetype = as.integer(input$rectLinetype))
+      # text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
+      # title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # strip.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.line = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # axis.text.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.text.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.ticks = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # axis.title.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.title.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.ticks.length = unit(0.15, "cm"),
+      # axis.ticks.margin = unit(0.1, "cm"),
+      # legend.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
+      # legend.margin = unit(0.2, "cm"),
+      # legend.key = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
+      # legend.key.size = unit(1.2, "lines"),
+      # legend.key.height = NULL,
+      # legend.key.width = NULL,
+      # legend.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # legend.text.align = NULL,
+      # legend.title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # legend.title.align = NULL,
+      # legend.position = "right",
+      # legend.direction = NULL,
+      # legend.justification = "center",
+      # legend.box = NULL,
+      # panel.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
+      # panel.border = element_rect(fill = NA, colour = NULL, size = NULL, linetype = NULL),
+      # panel.grid.major = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # panel.grid.minor = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # panel.margin = unit(0.25, "lines"),
+      # panel.margin.x = NULL,
+      # panel.margin.y = NULL,
+      # strip.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
+      # strip.text.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # strip.text.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # plot.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
+      # plot.title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
+      # complete = TRUE
     )
 
-
+    # inTheme <- "default"
 
 
 
@@ -316,7 +333,7 @@ shinyServer(function(input, output) {
     # legend.key.height = unit(1, "cm"),
     # legend.key.width = unit(.645,"cm"),
     # legend.margin = unit(1.5741,"cm")
-  theme_set(theme_new)
+  # theme_set(theme_current)
 
   scale_colour_discrete <- function(...) scale_colour_custom(..., palette="Set1")
   scale_fill_discrete <- function(...) scale_fill_custom(... , palette="Set1")
