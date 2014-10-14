@@ -13,8 +13,8 @@ shinyServer(function(input, output) {
   plotHeight <- function() {
     input$plotHeight
   }
-
-  #################### Functions to Define custom colors #####################
+"#000000"
+  #################### Functions to Define custom colours #####################
   divlist<-c("BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral")
   quallist<-c("Accent","Dark2","Paired","Pastel1","Pastel2","Set1","Set2","Set3")
   seqlist<-c("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd",
@@ -25,10 +25,10 @@ shinyServer(function(input, output) {
   seqnum <- rep(9, length(seqlist))
 
   namelist<-c(divlist,quallist,seqlist)
-  maxcolors <- c(divnum,qualnum,seqnum)
+  maxcolours <- c(divnum,qualnum,seqnum)
   catlist<-rep(c("div","qual","seq"),c(length(divlist),length(quallist),length(seqlist)))
 
-  custom.pal.info<-data.frame(maxcolors=maxcolors,category=catlist,row.names=namelist)
+  custom.pal.info<-data.frame(maxcolours=maxcolours,category=catlist,row.names=namelist)
 
 
   custom.pal<-function(n,name){
@@ -39,21 +39,21 @@ shinyServer(function(input, output) {
      warning("minimal value for n is 3, returning requested palette with 3 different levels\n")
      return(custom.pal(3,name))
      }
-     if(n>maxcolors[which(name==namelist)]){
-     warning(paste("n too large, allowed maximum for palette",name,"is",maxcolors[which(name==namelist)]),
-  "\nReturning the palette you asked for with that many colors\n")
-     return(custom.pal(maxcolors[which(name==namelist)],name))
+     if(n>maxcolours[which(name==namelist)]){
+     warning(paste("n too large, allowed maximum for palette",name,"is",maxcolours[which(name==namelist)]),
+  "\nReturning the palette you asked for with that many colours\n")
+     return(custom.pal(maxcolours[which(name==namelist)],name))
      }
 
-    c1 <- col2rgb(input$palColor1)
-    c2 <- col2rgb(input$palColor2)
-    c3 <- col2rgb(input$palColor3)
-    c4 <- col2rgb(input$palColor4)
-    c5 <- col2rgb(input$palColor5)
-    c6 <- col2rgb(input$palColor6)
-    c7 <- col2rgb(input$palColor7)
-    c8 <- col2rgb(input$palColor8)
-    c9 <- col2rgb(input$palColor9)
+    c1 <- col2rgb(input$palColour1)
+    c2 <- col2rgb(input$palColour2)
+    c3 <- col2rgb(input$palColour3)
+    c4 <- col2rgb(input$palColour4)
+    c5 <- col2rgb(input$palColour5)
+    c6 <- col2rgb(input$palColour6)
+    c7 <- col2rgb(input$palColour7)
+    c8 <- col2rgb(input$palColour8)
+    c9 <- col2rgb(input$palColour9)
 
 
 
@@ -113,10 +113,10 @@ shinyServer(function(input, output) {
      warning("minimal value for n is 3, displaying requested palette with 3 different levels\n")
      return(display.custom.pal(3,name))
      }
-     if(n>maxcolors[which(name==namelist)]){
-     warning(paste("n too large, allowed maximum for palette",name,"is",maxcolors[which(name==namelist)]),
-  "\nDisplaying the palette you asked for with that many colors\n")
-     return(display.custom.pal(maxcolors[which(name==namelist)],name))
+     if(n>maxcolours[which(name==namelist)]){
+     warning(paste("n too large, allowed maximum for palette",name,"is",maxcolours[which(name==namelist)]),
+  "\nDisplaying the palette you asked for with that many colours\n")
+     return(display.custom.pal(maxcolours[which(name==namelist)],name))
      }
 
 
@@ -137,41 +137,41 @@ shinyServer(function(input, output) {
       gapnum <- max(c(divnum,qualnum,seqnum))
       totnum <- c(divnum, gapnum, qualnum, gapnum, seqnum)
       if (!(type %in% c("div","qual","seq","all"))) {
-  stop(paste(type, "is not a valid name for a color list\n"))
+  stop(paste(type, "is not a valid name for a colour list\n"))
       }
-      colorlist <- switch(type, div=divlist,
+      colourlist <- switch(type, div=divlist,
           qual=quallist, seq=seqlist,
           all=totallist)
       maxnum <- switch(type, div=divnum,
        qual=qualnum,
        seq=seqnum,
        all=totnum)
-      if(!is.null(select)){colorlist <- colorlist[select]
+      if(!is.null(select)){colourlist <- colourlist[select]
    maxnum <- maxnum[select]
-   if(any(is.na(colorlist)))
+   if(any(is.na(colourlist)))
        stop(paste("Illegal value(s) of select: ",
-          paste(select[is.na(colorlist)],
+          paste(select[is.na(colourlist)],
         collapse=" ")))
        }
       palattr <-  switch(type,  qual="qualitative",  div
          ="divergent", seq="sequential",
          all="qualitative+divergent+sequential")
       if(is.null(n))n <- maxnum
-      if(length(n)==1)n <- rep(n, length(colorlist))
+      if(length(n)==1)n <- rep(n, length(colourlist))
       if(exact.n){
   keep <- n<=maxnum
-  colorlist <- colorlist[keep]
+  colourlist <- colourlist[keep]
   n <- n[keep]
   maxnum <- maxnum[keep]
       }
       if (any(n < 3) | exact.n & any(n>maxnum)|
-  length(n)!=length(colorlist)){
-  warning("Illegal vector of color numbers")
+  length(n)!=length(colourlist)){
+  warning("Illegal vector of colour numbers")
   print(paste(n, collapse=" "))
       }
       n[n<3] <- 3
       n[n>maxnum] <- maxnum[n>maxnum]
-      nr <- length(colorlist)
+      nr <- length(colourlist)
       nc <- max(n)
       ylim <- c(0,nr)
       oldpar <- par(mgp=c(2,0.25,0))
@@ -180,12 +180,12 @@ shinyServer(function(input, output) {
    xlab="",ylab="")
       for(i in 1:nr)
       {nj <- n[i]
-       if(colorlist[i]=="")next
-       shadi <- custom.pal(nj, colorlist[i])
+       if(colourlist[i]=="")next
+       shadi <- custom.pal(nj, colourlist[i])
        rect(xleft=0:(nj-1), ybottom=i-1, xright=1:nj, ytop=i-0.2, col=shadi,
     border="light grey")
    }
-      text(rep(-0.1,nr),(1:nr)-0.6, labels=colorlist, xpd=TRUE, adj=1)
+      text(rep(-0.1,nr),(1:nr)-0.6, labels=colourlist, xpd=TRUE, adj=1)
   }
 
 
@@ -229,41 +229,29 @@ shinyServer(function(input, output) {
   }
 
 
-  inTheme <- reactive({
-        paste("theme",input$currentTheme,sep="_")
-        # theme_set(inThemeFunc())
-    })
- 
-  output$plot <- renderPlot({
-
-          # tmp <-  get(paste("theme",inTheme,sep="_"),mode="function")
-          # theme_set(tmp())
-    theme_set(get(inTheme(),mode="function")())
-    # theme_set(get(inTheme,mode="function")())
-    # theme_set(Atheme())
-
-    # if (tmp == "grey"){
-    #   theme_set(theme_grey())
-    # }
-    # else if (tmp == "default"){
-    #   theme_set(theme_default())
-    # }
-
-
-
-    # theme_set(theme_default)
-    theme_update(
+tmp<-  reactive({
+     theme_update(
 #####################################################################################################################################################################################################################################################################
-      line = element_line(size=input$lineSize, color = input$lineColor, linetype = as.integer(input$lineLinetype), lineend = input$lineLineend),
-      rect = element_rect(fill = input$rectFill, colour = input$rectColor, size = input$rectSize, linetype = as.integer(input$rectLinetype))
+      line = element_line(size=input$line_size, colour = input$line_colour, linetype = as.integer(input$line_linetype), lineend = input$line_lineend),
+      rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
+      )
       # text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
       # title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # axis.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # strip.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.line = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      if(nchar(input$axis_line_linetype)>0 && nchar(input$axis_line_lineend)>0)
+      {
+        print("bar")
+        theme_update(
+          axis.line = element_line(size=input$axis_line_size, colour = input$axis_line_colour, linetype = as.integer(input$axis_line_linetype), lineend = input$axis_line_lineend)
+          )
+      }
+      # axis.line.x = element_line(size=input$axis_line_x_size, colour = input$axis_line_x_colour, linetype = as.integer(input$axis_line_x_linetype), lineend = input$axis_line_x_lineend),
+      # axis.line.y = element_line(size=input$axis_line_y_size, colour = input$axis_line_y_colour, linetype = as.integer(input$axis_line_y_linetype), lineend = input$axis_line_y_lineend)
+
       # axis.text.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # axis.text.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.ticks = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # axis.ticks = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
       # axis.title.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # axis.title.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # axis.ticks.length = unit(0.15, "cm"),
@@ -284,8 +272,8 @@ shinyServer(function(input, output) {
       # legend.box = NULL,
       # panel.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
       # panel.border = element_rect(fill = NA, colour = NULL, size = NULL, linetype = NULL),
-      # panel.grid.major = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
-      # panel.grid.minor = element_line(size=NULL, color = NULL, linetype = NULL, lineend = NULL),
+      # panel.grid.major = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
+      # panel.grid.minor = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
       # panel.margin = unit(0.25, "lines"),
       # panel.margin.x = NULL,
       # panel.margin.y = NULL,
@@ -296,17 +284,63 @@ shinyServer(function(input, output) {
       # plot.title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
       # plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
       # complete = TRUE
-    )
+    
+    })
+
+  inTheme <- reactive({
+        paste("theme",input$currentTheme,sep="_")
+        # theme_set(inThemeFunc())
+    })
+
+  # tmp <- reactive({
+  #     input$axis.lineColour
+  #   })
+  # theme_set(theme_bw())
+  output$plot <- renderPlot({
+
+    # print(input$axis_line_x_linetype)
+          # tmp <-  get(paste("theme",inTheme,sep="_"),mode="function")
+          # theme_set(tmp())
+    theme_set(get(inTheme(),mode="function")())
+    # tmp()
+    theme_update(
+#####################################################################################################################################################################################################################################################################
+      line = element_line(size=input$line_size, colour = input$line_colour, linetype = as.integer(input$line_linetype), lineend = input$line_lineend),
+      rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
+      )
+      # text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
+      # title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # axis.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      # strip.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
+      if(nchar(input$axis_line_linetype)>0 && nchar(input$axis_line_lineend)>0)
+      {
+        print("bar")
+        theme_update(
+          axis.line = element_line(size=input$axis_line_size, colour = input$axis_line_colour, linetype = as.integer(input$axis_line_linetype), lineend = input$axis_line_lineend)
+          )
+      }
+    # theme_set(get(inTheme,mode="function")())
+    # theme_set(Atheme())
+
+    # if (tmp == "grey"){
+    #   theme_set(theme_grey())
+    # }
+    # else if (tmp == "default"){
+    #   theme_set(theme_default())
+    # }
+
+
+    # theme_set(theme_default)
+   
 
     # inTheme <- "default"
-
 
 
 
 ###############################################################################################################################################################################################################
     
     #background, margins, title
-    # plot.background = element_rect(fill=paste("#",input$plotBgColor,sep=""), color= "black"),
+    # plot.background = element_rect(fill=paste("#",input$plotBgColour,sep=""), colour= "black"),
     # plot.margin = unit(c(2.8835,.582083,2.0748,.9378), "cm"),
     # plot.title = element_text(vjust = 7.9746, hjust = 0, size = 20, family = "ITC Franklin Gothic Std Demi Condensed"),
 
@@ -314,10 +348,10 @@ shinyServer(function(input, output) {
     # panel.border = element_blank(),
     # panel.background = element_rect(fill="transparent", size = 0),
     # panel.grid.minor = element_blank(),
-    # panel.grid.major = element_line(size=.4703669, color = "#FFFFFF"),
+    # panel.grid.major = element_line(size=.4703669, colour = "#FFFFFF"),
 
     # #axes, ticks, and axis labels
-    # axis.line = element_line(size=.4703669, color = "#FFFFFF"),
+    # axis.line = element_line(size=.4703669, colour = "#FFFFFF"),
     # axis.ticks = element_blank(),
     # axis.ticks.length = unit(.20888, "cm"),
     # axis.text.x = element_text(size = 12, family = "ITC Franklin Gothic Std Demi"),
@@ -326,7 +360,7 @@ shinyServer(function(input, output) {
     # axis.title.y = element_text(vjust = -1.2633, angle = -90, size = 12, family = "Franklin Gothic Book"),
 
     # #legend
-    # legend.background = element_rect(fill = "#E5E2E0", size = .4703669, color = "#C0C0BB"),
+    # legend.background = element_rect(fill = "#E5E2E0", size = .4703669, colour = "#C0C0BB"),
     # legend.text = element_text(size = 10, family = "Franklin Gothic Book"),
     # legend.title = element_blank(),
     # legend.key = element_rect(fill="#E5E2E0", colour= "#E5E2E0", size = 0),
@@ -360,7 +394,9 @@ shinyServer(function(input, output) {
         mtcars.long <- melt(mtcars, id = "mpg", measure = c("disp", "hp", "wt"))
         print(ggplot(mtcars.long, aes(mpg, value, colour = variable)) + geom_line()+ggtitle("Title"))
     }
-    
+      print("foo")
+       print(theme_get()$axis.line)
+ 
     
   }, height = plotHeight, width = plotWidth)
   
