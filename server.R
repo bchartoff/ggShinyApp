@@ -292,48 +292,104 @@ tmp<-  reactive({
         # theme_set(inThemeFunc())
     })
 
+# test <- function(thing){
+#   reactive({
+
+#     })
+# }
+
+linetype <- function(linetype){
+  if(linetype == ""){
+    val <- NULL
+  }
+  else{
+    val <- as.integer(linetype)
+  }
+  val
+}
+
+size <- function(size){
+  if(is.na(size)){
+    val <- NULL
+  }
+  else{
+    val <- size
+  }
+  val
+}
+
+colour <- function(colour){
+  if(colour == ""){
+    val <- NULL
+  }
+  else{
+    val <- colour
+  }
+  val
+}
+
+lineend <- function(lineend){
+  if(lineend == ""){
+    val <- NULL
+  }
+  else{
+    val <- lineend
+  }
+  val
+}
+
+line.size <- reactive({size(input$line_size)})
+line.colour <- reactive({colour(input$line_colour)})
+line.linetype <- reactive({linetype(input$line_linetype)})
+line.lineend <- reactive({lineend(input$line_lineend)})
+
+axis.line.size <- reactive({size(input$axis_line_size)})
+axis.line.colour <- reactive({colour(input$axis_line_colour)})
+axis.line.linetype <- reactive({linetype(input$axis_line_linetype)})
+axis.line.lineend <- reactive({lineend(input$axis_line_lineend)})
+
+axis.line.x.size <- reactive({size(input$axis_line_x_size)})
+axis.line.x.colour <- reactive({colour(input$axis_line_x_colour)})
+axis.line.x.linetype <- reactive({linetype(input$axis_line_x_linetype)})
+axis.line.x.lineend <- reactive({lineend(input$axis_line_x_lineend)})
+
+axis.line.y.size <- reactive({size(input$axis_line_y_size)})
+axis.line.y.colour <- reactive({colour(input$axis_line_y_colour)})
+axis.line.y.linetype <- reactive({linetype(input$axis_line_y_linetype)})
+axis.line.y.lineend <- reactive({lineend(input$axis_line_y_lineend)})
+
+
+rect.fill <- reactive({colour(input$rect_fill)})
+rect.colour <- reactive({colour(input$rect_colour)})
+rect.size <- reactive({size(input$rect_size)})
+rect.linetype <- reactive({linetype(input$rect_linetype)})
+
+
+# test <- reactive(foo,{
+#     input$axis_line_size
+#   })
+
   # tmp <- reactive({
   #     input$axis.lineColour
   #   })
   # theme_set(theme_bw())
   output$plot <- renderPlot({
+    # print(theme_get())
+    theme_set(theme_default())
 
-    # print(input$axis_line_x_linetype)
-          # tmp <-  get(paste("theme",inTheme,sep="_"),mode="function")
-          # theme_set(tmp())
-    theme_set(get(inTheme(),mode="function")())
-    # tmp()
+
     theme_update(
-#####################################################################################################################################################################################################################################################################
-      line = element_line(size=input$line_size, colour = input$line_colour, linetype = as.integer(input$line_linetype), lineend = input$line_lineend),
-      rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
-      )
-      # text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
-      # title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # strip.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      if(nchar(input$axis_line_linetype)>0 && nchar(input$axis_line_lineend)>0)
-      {
-        print("bar")
-        theme_update(
-          axis.line = element_line(size=input$axis_line_size, colour = input$axis_line_colour, linetype = as.integer(input$axis_line_linetype), lineend = input$axis_line_lineend)
-          )
-      }
-    # theme_set(get(inTheme,mode="function")())
-    # theme_set(Atheme())
+      line = element_line(size=line.size(),colour=line.colour(),linetype=line.linetype(),lineend=line.lineend()),
+     
+      axis.line = element_line(size=axis.line.size(),linetype=axis.line.linetype(),colour=axis.line.colour(), lineend=axis.line.lineend()),
+      axis.line.x = element_line(size=axis.line.x.size(), colour=axis.line.x.colour(), linetype=axis.line.x.linetype(), lineend=axis.line.x.lineend()),
+      axis.line.y = element_line(size=axis.line.y.size(),colour=axis.line.y.colour(),linetype=axis.line.y.linetype(),lineend=axis.line.y.lineend())
+    )
 
-    # if (tmp == "grey"){
-    #   theme_set(theme_grey())
-    # }
-    # else if (tmp == "default"){
-    #   theme_set(theme_default())
-    # }
-
-
-    # theme_set(theme_default)
-   
-
-    # inTheme <- "default"
+      # rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
+      # )
+      
+      print(theme_get()$axis.line)
 
 
 
@@ -394,8 +450,10 @@ tmp<-  reactive({
         mtcars.long <- melt(mtcars, id = "mpg", measure = c("disp", "hp", "wt"))
         print(ggplot(mtcars.long, aes(mpg, value, colour = variable)) + geom_line()+ggtitle("Title"))
     }
-      print("foo")
-       print(theme_get()$axis.line)
+    else if (input$sampleChart == 7){
+      p <- ggplot(mtcars, aes(mpg, wt)) + geom_point() + ggtitle("Title")
+      print(p + facet_grid(vs ~ am, margins=TRUE))
+    }
  
     
   }, height = plotHeight, width = plotWidth)

@@ -6,6 +6,7 @@ source('lib/theme_default.R')
 
 
 jscolorInput <- function(id, default) {
+  print(default)
   tagList(
     singleton(tags$head(tags$script(src = "ShinySky/inst/www/ss-jscolor.js"))),
     singleton(tags$head(tags$script(src = "ShinySky/inst/www/jscolor/jscolor.js"))),
@@ -64,7 +65,7 @@ lineOpts <- function(title,element,width,isParent){
               "{
                   option: function(item, escape) {
                     return '<div><img ' +
-                        'src=\"images/lineEnds/' + item.value + '.png\" /></div>';
+                        'src=\"images/lineEnds/' + item.value + '_end.png\" />' + ' ' + item.value + '</div>';
                   }
               }"
           ))))
@@ -84,7 +85,7 @@ rectOpts <- function(title,element,width,isParent){
               "{
                   option: function(item, escape) {
                     return '<div><img ' +
-                        'src=\"images/lineTypes/' + item.value + '.png\" /></div>';
+                        'src=\"images/lineTypes/' + item.value + '_line.png\" /></div>';
                   }
               }"
             )))),
@@ -97,18 +98,29 @@ rectOpts <- function(title,element,width,isParent){
   col
 }
 
-fontOpts <- function(title,element,width){
+fontOpts <- function(title,element,width,isParent){
    col <- column(width,
           h4(title),
-           selectizeInput("font",
+           selectizeInput(paste(element,"family",sep="_"),
             label="font",
-            choices=fonts()
-            ),
-          numericInput("rectSize",'Stroke: ',value= theme_current$element$size),
-          tags$label("Fill: "),
-          jscolorInput("rectFill", theme_current$element$fill),
-          tags$label("Stroke: "),
-          jscolorInput("rectColour", theme_current$element$colour)
+            choices= promote_list_item(fonts(), theme_current[element][[1]]["font"][[1]],isParent),
+            options = list(
+              dropdownParent = 'body'
+            )),
+           selectizeInput(paste(element,"face",sep="_"),
+            label="face",
+            choices=promote_list_item(faces, theme_current[element][[1]]["face"][[1]],isParent),
+            options = list(
+              dropdownParent = 'body'
+            )),
+          numericInput(paste(element,"size",sep="_"),'Size: ',value= theme_current[element][[1]]["size"][[1]]),
+          tags$label("Color: "),
+          jscolorInput(paste(element,"colour",sep="_"), theme_current[element][[1]]["colour"][[1]]),
+          sliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= 0.5),
+          sliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= 0.5),
+          sliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 1, value= 0),
+          numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]])
+
         )
   col
 }
@@ -120,6 +132,7 @@ lineTypes <- list(0,1,2,3,4,5,6)
 # ,"longdash","dotted","dashed","dotdash","twodash","F1","4C88C488","1F","12345678")
 lineEnds <- list("butt","round","square")
 themes <- list("default","grey","bw","calc","economist","excel","few","fivethirtyeight","gdocs","solarized","stata","tufte","wsj")
+faces <- list("plain", "italic", "bold", "bold.italic")
  
 shinyUI(fluidPage(theme = "css/main.css",
  
@@ -129,12 +142,12 @@ shinyUI(fluidPage(theme = "css/main.css",
     tabPanel("Theme Builder Settings",
       fluidRow(
         column(12,
-          selectizeInput("currentTheme",
-            label = "Theme: ", 
-            choices = themes,
-            options = list(
-              dropdownParent = 'body'
-            )),
+          # selectizeInput("currentTheme",
+          #   label = "Theme: ", 
+          #   choices = themes,
+          #   options = list(
+          #     dropdownParent = 'body'
+          #   )),
           selectizeInput("sampleChart",
             options = list(
               dropdownParent = 'body'
@@ -145,7 +158,8 @@ shinyUI(fluidPage(theme = "css/main.css",
                           "Bar chart: 5 colours" = 3,
                           "Scatter plot: 3 colours" = 4,
                           "Scatter plot: 9 colours" = 5,
-                          "Line chart: 3 colours" = 6), selected = 2)
+                          "Line chart: 3 colours" = 6,
+                          "Scatter plot: Facet Grid" = 7), selected = 3)
 
         )
       )
@@ -173,39 +187,45 @@ shinyUI(fluidPage(theme = "css/main.css",
       fluidRow(
         lineOpts("All Lines","line",3,TRUE),
         rectOpts("All Rectangles","rect",3,TRUE),
-        
-        column(3,
-          h4("All Text"),
-          selectizeInput("tmp",
-            options = list(
-              dropdownParent = 'body'
-            ),
-            label="tmp",
-            choices=fonts()
-            ),
-          numericInput("lineSizae",'stroke',value=NULL),
-          numericInput("lineSizae",'stroke',value=NULL)
-        ),
-        column(3,
-          h4("All Titles"),
-          numericInput("lineSizae",'stroke',value=NULL),
-          numericInput("lineSizae",'stroke',value=NULL),
-          numericInput("lineSizae",'stroke',value=NULL)
-        )
+        fontOpts("All Text","text",3,TRUE),
+        fontOpts("All Titles","title",3,TRUE)
+
       )
     ),
-    tabPanel("Axes",
+    tabPanel("Axis Lines",
       fluidRow(
         lineOpts("Axes","axis_line",3,FALSE),
         lineOpts("X Axis","axis_line_x",3,FALSE),
         lineOpts("Y Axis","axis_line_y",3,FALSE)
       )
     ),
-    tabPanel("Ticks"),
+    tabPanel("Axis Labels",
+      fluidRow(
+        fontOpts("Both Axis Labels","axis_title",3,FALSE),
+        fontOpts("X Axis Label","axis_title_x",3,FALSE),
+        fontOpts("Y Axis Label","axis_title_y",3,FALSE)
+      )
+    ),
+    tabPanel("Axis ticks",
+      fluidRow()
+    ),
+    #ticks, ticks x, ticks y, ticks length, ticks margin
+    tabPanel("Axis Tick Labels"),
+    #tick text, tick text x, tick text y
     tabPanel("Legend"),
+    #tick text, tick text x, tick text y
+    tabPanel("Legend Text"),
+    #tick text, tick text x, tick text y
     tabPanel("Plotting Area"),
+    #panel.background, panel.border, panel.margin, panel.grid
+    tabPanel("Major Grid Lines"),
+    #major, x, y
+    tabPanel("Minor Grid Lines"),
+    #minor, x, y
     tabPanel("Background"),
+    #tick text, tick text x, tick text y
     tabPanel("Facet Labels"),
+    #tick text, tick text x, tick text y
     tabPanel("The rest",
       jscolorInput("plotBgColour", "#000000"),
       numericInput('plotWidth', 'Plot Width', value = 600),

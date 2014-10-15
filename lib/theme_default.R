@@ -3,7 +3,7 @@ source('lib/grid/unit.R')
 
     theme_default <- function(){
       theme(
-      line = element_line(size=.5, colour = "#00ff00", linetype = 1, lineend = "butt"),
+      line = element_line(size=.5, colour = "#000000", linetype = 1, lineend = "butt"),
       rect = element_rect(fill = "#ffffff", colour = "#000000", size = .5, linetype = 1),
       text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
       title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),

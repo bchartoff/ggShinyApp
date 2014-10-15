@@ -326,7 +326,7 @@ var jscolor = {
 	color : function(target, prop) {
 
 
-		this.required = true; // refuse empty values?
+		this.required = false; // refuse empty values?
 		this.adjust = true; // adjust value to uniform notation?
 		this.hash = true; // prefix color with # symbol?
 		this.caps = true; // uppercase?
