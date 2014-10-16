@@ -2,6 +2,7 @@ library(shiny)
 library(ggplot2)
 library(extrafont)
 
+
 source('lib/theme_default.R')
 
 
@@ -35,7 +36,15 @@ promote_list_item <- function(list,item,includeFirstOption){
   list
 }
 
-lineOpts <- function(title,element,width,isParent){
+lineOpts <- function(title,element,width,isParent=FALSE,axis_ticks=FALSE){
+  if(axis_ticks){
+    length <- numericInput("axis_ticks_length",'Tick Length (pt): ',value= theme_current$axis.ticks.length)
+    margin <- numericInput("axis_ticks_margin",'Tick Margin (pt): ',value= theme_current$axis.ticks.margin)
+  }
+  else{
+    length <- NULL
+    margin <- NULL
+  }
   name <- gsub("_",".",element)
   col <- column(width,
           h4(title),
@@ -53,7 +62,7 @@ lineOpts <- function(title,element,width,isParent){
                   }
               }"
             )))),
-          numericInput(paste(element,"size",sep="_"),'Stroke: ',value= theme_current[name][[1]]["size"][[1]]),
+          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[name][[1]]["size"][[1]]),
           tags$label("Color: "),
           jscolorInput(paste(element,"colour",sep="_"), theme_current[name][[1]]["colour"][[1]]),
           selectizeInput(paste(element,"lineend",sep="_"),
@@ -68,12 +77,48 @@ lineOpts <- function(title,element,width,isParent){
                         'src=\"images/lineEnds/' + item.value + '_end.png\" />' + ' ' + item.value + '</div>';
                   }
               }"
-          ))))
-        )
+                        ))
+                      )
+                    ),
+          length,
+          margin,
+          checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
+          )
   col
 }
 
-rectOpts <- function(title,element,width,isParent){
+rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, strip_background=FALSE, legend_background=FALSE, legend_key=FALSE){
+  if(panel_border){
+    panel_fill <- div(id="panel_border_fill")
+  }
+  else{
+    panel_fill <- jscolorInput(paste(element,"fill",sep="_"), theme_current[element][[1]]["fill"][[1]])
+  }
+
+  if(strip_background){
+    panel_margin <- numericInput("panel_margin",'Facet Label Margin (pt): ',value= theme_current$panel.margin)
+  }
+  else{
+    panel_margin <- NULL
+  }
+
+  if(legend_background){
+    legend_margin <- numericInput("legend_margin",'Legend Margin (pt): ',value= theme_current$legend.margin)
+  }
+  else{
+    legend_margin <- NULL
+  }
+
+  if(legend_key){
+    key_size <- numericInput("legend_key_size",'Key Size (pt): ',value= theme_current$legend.key.size)
+    key_height <- numericInput("legend_key_height",'Key Height (pt): ',value= theme_current$legend.key.height)
+    key_width <- numericInput("legend_key_width",'Key Width (pt): ',value= theme_current$legend.key.width)
+  }
+  else{
+    key_size <- NULL
+    key_height <- NULL
+    key_width <- NULL
+  }
   col <- column(width,
           h4(title),
           selectizeInput(paste(element,"linetype",sep="_"),
@@ -89,16 +134,22 @@ rectOpts <- function(title,element,width,isParent){
                   }
               }"
             )))),
-          numericInput(paste(element,"size",sep="_"),'Stroke: ',value= theme_current[element][[1]]["size"][[1]]),
+          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[element][[1]]["size"][[1]]),
           tags$label("Fill: "),
-          jscolorInput(paste(element,"fill",sep="_"), theme_current[element][[1]]["fill"][[1]]),
+          panel_fill,
           tags$label("Stroke: "),
-          jscolorInput(paste(element,"colour",sep="_"), theme_current[element][[1]]["colour"][[1]])
+          jscolorInput(paste(element,"colour",sep="_"), theme_current[element][[1]]["colour"][[1]]),
+          panel_margin,
+          legend_margin,
+          key_size,
+          key_height,
+          key_width,
+          checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
         )
   col
 }
 
-fontOpts <- function(title,element,width,isParent){
+fontOpts <- function(title,element,width,isParent=FALSE){
    col <- column(width,
           h4(title),
            selectizeInput(paste(element,"family",sep="_"),
@@ -119,8 +170,8 @@ fontOpts <- function(title,element,width,isParent){
           sliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= 0.5),
           sliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= 0.5),
           sliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 1, value= 0),
-          numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]])
-
+          numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]]),
+          checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
         )
   col
 }
@@ -137,17 +188,11 @@ faces <- list("plain", "italic", "bold", "bold.italic")
 shinyUI(fluidPage(theme = "css/main.css",
  
   headerPanel("ggplot2 Theme Builder"),
-
-  navlistPanel(
+  plotOutput(outputId = 'plot', width = "100%", height = "100%"),
+  hr(),
+  navlistPanel(widths = c(3,9),
     tabPanel("Theme Builder Settings",
-      fluidRow(
         column(12,
-          # selectizeInput("currentTheme",
-          #   label = "Theme: ", 
-          #   choices = themes,
-          #   options = list(
-          #     dropdownParent = 'body'
-          #   )),
           selectizeInput("sampleChart",
             options = list(
               dropdownParent = 'body'
@@ -159,81 +204,137 @@ shinyUI(fluidPage(theme = "css/main.css",
                           "Scatter plot: 3 colours" = 4,
                           "Scatter plot: 9 colours" = 5,
                           "Line chart: 3 colours" = 6,
-                          "Scatter plot: Facet Grid" = 7), selected = 3)
-
-        )
+                          "Scatter plot: Facet Grid" = 7), selected = 3
+          ),
+          numericInput('plotWidth', 'Plot Width', value = 600),
+          div('x'),
+          numericInput('plotHeight', 'Plot Height', value = 400)
       )
     ),
     tabPanel("Global colour palette",
-      fluidRow(
-        column(4,
-          jscolorInput("palColour1", nineColours[1]),
-          jscolorInput("palColour2", nineColours[4]),
-          jscolorInput("palColour3", nineColours[7])
-        ),
-        column(4,
-          jscolorInput("palColour4", nineColours[2]),
-          jscolorInput("palColour5", nineColours[5]),
-          jscolorInput("palColour6", nineColours[8])
-        ),
-        column(4,
-          jscolorInput("palColour7", nineColours[3]),
-          jscolorInput("palColour8", nineColours[6]),
-          jscolorInput("palColour9", nineColours[9])
-        )
+      column(4,
+        jscolorInput("palColour1", nineColours[1]),
+        jscolorInput("palColour2", nineColours[4]),
+        jscolorInput("palColour3", nineColours[7])
+      ),
+      column(4,
+        jscolorInput("palColour4", nineColours[2]),
+        jscolorInput("palColour5", nineColours[5]),
+        jscolorInput("palColour6", nineColours[8])
+      ),
+      column(4,
+        jscolorInput("palColour7", nineColours[3]),
+        jscolorInput("palColour8", nineColours[6]),
+        jscolorInput("palColour9", nineColours[9])
       )
     ),
     tabPanel("Parent Elements",
-      fluidRow(
-        lineOpts("All Lines","line",3,TRUE),
-        rectOpts("All Rectangles","rect",3,TRUE),
-        fontOpts("All Text","text",3,TRUE),
-        fontOpts("All Titles","title",3,TRUE)
+      lineOpts("All Lines","line",3,isParent=TRUE),
+      rectOpts("All Rectangles","rect",3,isParent=TRUE),
+      fontOpts("All Text","text",3,isParent=TRUE),
+      fontOpts("All Titles","title",3,isParent=TRUE)
 
-      )
     ),
     tabPanel("Axis Lines",
-      fluidRow(
-        lineOpts("Axes","axis_line",3,FALSE),
-        lineOpts("X Axis","axis_line_x",3,FALSE),
-        lineOpts("Y Axis","axis_line_y",3,FALSE)
-      )
+      lineOpts("Axes","axis_line",3),
+      lineOpts("X Axis","axis_line_x",3),
+      lineOpts("Y Axis","axis_line_y",3)
     ),
     tabPanel("Axis Labels",
+      fontOpts("Both Axis Labels","axis_title",3),
+      fontOpts("X Axis Label","axis_title_x",3),
+      fontOpts("Y Axis Label","axis_title_y",3)
+    ),
+    tabPanel("Axis Ticks",
+      lineOpts("Tick marks","axis_ticks",3,axis_ticks=TRUE),
+      lineOpts("X Axis Tick Marks","axis_ticks_x",3),
+      lineOpts("Y Axis Tick Marks","axis_ticks_y",3)
+    ),
+    tabPanel("Axis Tick Labels",
+      fontOpts("All Ticks Labels","axis_text",3),
+      fontOpts("X Axis Tick Labels","axis_text_x",3),
+      fontOpts("Y Axis Tick Labels","axis_text_y",3)
+    ),
+    tabPanel("Legend",
       fluidRow(
-        fontOpts("Both Axis Labels","axis_title",3,FALSE),
-        fontOpts("X Axis Label","axis_title_x",3,FALSE),
-        fontOpts("Y Axis Label","axis_title_y",3,FALSE)
+      rectOpts("Legend Background","legend_background",3,legend_background=TRUE),
+      rectOpts("Legend Keys","legend_key",3,legend_key=TRUE),
+      column(6,
+        h4("Legend Layout"),
+        selectizeInput("legend_direction",
+            options = list(
+              dropdownParent = 'body'
+            ),
+            label = "Legend Layout:", 
+            choices = list( "horizontal",
+                            "vertical"
+                          )
+          ),
+        selectizeInput("legend_box",
+            label = "Multiple Legend Layout:", 
+            choices = list( "",
+                            "horizontal",
+                            "vertical"
+                          ),
+            options = list(
+              dropdownParent = 'body'
+            )
+          ),
+        selectizeInput("legend_position",
+            options = list(
+              dropdownParent = 'body'
+            ),
+            label = "Legend Position:", 
+            choices = list( "left",
+                            "right",
+                            "bottom",
+                            "top"
+                          )
+        ),
+        # div(id="legend_position_description")
+        helpText("Or, you can enter a vector specifying Legend Position (0 to 1). Manual vector input takes precedence over the dropdown above. Delete both manual inputs to default back to the dropdown."),
+        numericInput("legend_position_x",NULL,value= theme_current$panel.margin),
+        div('x'),
+        numericInput("legend_position_y",NULL,value= theme_current$panel.margin),
+        helpText("For manual positions, optionally specify origin point as vector (0 to 1)"),
+        numericInput("legend_justification_x",NULL,value= theme_current$panel.margin),
+        div('x'),
+        numericInput("legend_justification_y",NULL,value= theme_current$panel.margin)
+      )
+)
+    ),
+    tabPanel("Legend Text"),
+    tabPanel("Plotting Area",
+      rectOpts("Plot Background","panel_background",3),
+      rectOpts("Plot Border","panel_border",3,panel_border=TRUE),
+      lineOpts("All Grid Lines","panel_grid",3)
+    ),
+    tabPanel("Major Grid Lines",
+      lineOpts("Major Grid Lines","panel_grid_major",3),
+      lineOpts("X Major Grid Lines","panel_grid_major_x",3),
+      lineOpts("Y Major Grid Lines","panel_grid_major_y",3)
+    ),
+    tabPanel("Minor Grid Lines",
+      lineOpts("Minor Grid Lines","panel_grid_minor",3),
+      lineOpts("X Minor Grid Lines","panel_grid_minor_x",3),
+      lineOpts("Y Minor Grid Lines","panel_grid_minor_y",3)
+    ),
+    tabPanel("Background",
+      rectOpts("Background Area","plot_background",3),
+      fontOpts("Plot Title","plot_title",3),
+      column(3,
+        h4("Plot Margin"),
+        numericInput("plot_margin","Plot Margin (pt): ",value = theme_current$plot.margin)
       )
     ),
-    tabPanel("Axis ticks",
-      fluidRow()
-    ),
-    #ticks, ticks x, ticks y, ticks length, ticks margin
-    tabPanel("Axis Tick Labels"),
-    #tick text, tick text x, tick text y
-    tabPanel("Legend"),
-    #tick text, tick text x, tick text y
-    tabPanel("Legend Text"),
-    #tick text, tick text x, tick text y
-    tabPanel("Plotting Area"),
-    #panel.background, panel.border, panel.margin, panel.grid
-    tabPanel("Major Grid Lines"),
-    #major, x, y
-    tabPanel("Minor Grid Lines"),
-    #minor, x, y
-    tabPanel("Background"),
-    #tick text, tick text x, tick text y
-    tabPanel("Facet Labels"),
-    #tick text, tick text x, tick text y
-    tabPanel("The rest",
-      jscolorInput("plotBgColour", "#000000"),
-      numericInput('plotWidth', 'Plot Width', value = 600),
-      div('x'),
-      numericInput('plotHeight', 'Plot Height', value = 600)
+    tabPanel("Facet Labels",
+      rectOpts("Label Background","strip_background",3,strip_background=TRUE),
+      fontOpts("Label Text", "strip_text",3),
+      fontOpts("X Label Text", "strip_text_x",3),
+      fontOpts("Y Label Text", "strip_text_y",3)
     )
   ),
   hr(),
-  plotOutput(outputId = 'plot', width = "100%", height = "100%")
+  tags$head(tags$script(src="js/remove_element.js"))
 
 ))

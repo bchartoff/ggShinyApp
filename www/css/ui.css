@@ -1,11 +1,11 @@
-.span3 > input{
+.span3 > input, .span6 > input{
 	display: inline-block;
-	/*float: left;*/
+	float: left;
 	width: 60%;
 	margin-left: 4%;
 }
 
-.span3 > .selectize-control > .selectize-input
+.span3 > .selectize-control > .selectize-input, .span6 > .selectize-control > .selectize-input
 {
 	display: inline-block;
 	width: 70%;
@@ -14,8 +14,8 @@
 
 }
 
-.span3 > label{
-	display: inline;
+.span3 > label, #panel_border_fill, .span6 > label, #panel_border_fill{
+	display: inline-block;
 	width: 22%;
 	float: left;
 	position: relative;
@@ -23,3 +23,62 @@
 	margin-right: 2%;
 	font-weight: bold;
 }
+
+.span6 > input{
+	width: 10%;
+}
+
+.span6 > .selectize-control{
+	width: 90%;
+}
+.span6 > .selectize-control > .selectize-input{
+	width: 50% !important;
+}
+.span6 > label, #panel_border_fill{
+	width: 38% !important;
+}
+
+#panel_border_fill{
+	width: 46% !important;
+	height: 20px;
+	padding: 4px 6px;
+	margin-bottom: 10px;
+}
+
+
+label[for *= _size]{
+	width: 40%;
+}
+input[id *= _size]{
+	width: 42%;
+}
+
+label[for *= lineheight], label[for = axis_ticks_length],label[for = axis_ticks_margin],label[for = panel_margin],label[for = plot_margin],label[for = legend_margin],label[for = legend_key_size],label[for = legend_key_height],label[for = legend_key_width]{
+	width: 63%;
+}
+input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#panel_margin,input#plot_margin,input#legend_margin,input#legend_key_size,input#legend_key_width,input#legend_key_height{
+	width: 20%;
+}
+
+
+/*#panel_background_fill{
+	width: ;
+}*/
+
+.checkbox{
+	width: 80% !important;
+	height:40px !important;
+}
+
+.checkbox > span{
+	color: #ff4400;
+}
+
+.tab-content{
+	height:500px;
+	padding-left:20px;
+}
+
+
+
+

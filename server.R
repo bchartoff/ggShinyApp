@@ -229,75 +229,6 @@ shinyServer(function(input, output) {
   }
 
 
-tmp<-  reactive({
-     theme_update(
-#####################################################################################################################################################################################################################################################################
-      line = element_line(size=input$line_size, colour = input$line_colour, linetype = as.integer(input$line_linetype), lineend = input$line_lineend),
-      rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
-      )
-      # text = element_text(family = "", face = "plain", colour = "black", size = 12, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
-      # title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # strip.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      if(nchar(input$axis_line_linetype)>0 && nchar(input$axis_line_lineend)>0)
-      {
-        print("bar")
-        theme_update(
-          axis.line = element_line(size=input$axis_line_size, colour = input$axis_line_colour, linetype = as.integer(input$axis_line_linetype), lineend = input$axis_line_lineend)
-          )
-      }
-      # axis.line.x = element_line(size=input$axis_line_x_size, colour = input$axis_line_x_colour, linetype = as.integer(input$axis_line_x_linetype), lineend = input$axis_line_x_lineend),
-      # axis.line.y = element_line(size=input$axis_line_y_size, colour = input$axis_line_y_colour, linetype = as.integer(input$axis_line_y_linetype), lineend = input$axis_line_y_lineend)
-
-      # axis.text.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.text.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.ticks = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
-      # axis.title.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.title.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # axis.ticks.length = unit(0.15, "cm"),
-      # axis.ticks.margin = unit(0.1, "cm"),
-      # legend.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
-      # legend.margin = unit(0.2, "cm"),
-      # legend.key = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
-      # legend.key.size = unit(1.2, "lines"),
-      # legend.key.height = NULL,
-      # legend.key.width = NULL,
-      # legend.text = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # legend.text.align = NULL,
-      # legend.title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # legend.title.align = NULL,
-      # legend.position = "right",
-      # legend.direction = NULL,
-      # legend.justification = "center",
-      # legend.box = NULL,
-      # panel.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
-      # panel.border = element_rect(fill = NA, colour = NULL, size = NULL, linetype = NULL),
-      # panel.grid.major = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
-      # panel.grid.minor = element_line(size=NULL, colour = NULL, linetype = NULL, lineend = NULL),
-      # panel.margin = unit(0.25, "lines"),
-      # panel.margin.x = NULL,
-      # panel.margin.y = NULL,
-      # strip.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
-      # strip.text.x = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # strip.text.y = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # plot.background = element_rect(fill = NULL, colour = NULL, size = NULL, linetype = NULL),
-      # plot.title = element_text(family = NULL, face = NULL, colour = NULL, size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL),
-      # plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
-      # complete = TRUE
-    
-    })
-
-  inTheme <- reactive({
-        paste("theme",input$currentTheme,sep="_")
-        # theme_set(inThemeFunc())
-    })
-
-# test <- function(thing){
-#   reactive({
-
-#     })
-# }
-
 linetype <- function(linetype){
   if(linetype == ""){
     val <- NULL
@@ -338,26 +269,102 @@ lineend <- function(lineend){
   val
 }
 
+line.hide <- reactive({input$line_hide})
 line.size <- reactive({size(input$line_size)})
 line.colour <- reactive({colour(input$line_colour)})
 line.linetype <- reactive({linetype(input$line_linetype)})
 line.lineend <- reactive({lineend(input$line_lineend)})
 
+axis.line.hide <- reactive({input$axis_line_hide})
 axis.line.size <- reactive({size(input$axis_line_size)})
 axis.line.colour <- reactive({colour(input$axis_line_colour)})
 axis.line.linetype <- reactive({linetype(input$axis_line_linetype)})
 axis.line.lineend <- reactive({lineend(input$axis_line_lineend)})
 
+axis.line.x.hide <- reactive({input$axis_line_x_hide})
 axis.line.x.size <- reactive({size(input$axis_line_x_size)})
 axis.line.x.colour <- reactive({colour(input$axis_line_x_colour)})
 axis.line.x.linetype <- reactive({linetype(input$axis_line_x_linetype)})
 axis.line.x.lineend <- reactive({lineend(input$axis_line_x_lineend)})
 
+axis.line.y.hide <- reactive({input$axis_line_y_hide})
 axis.line.y.size <- reactive({size(input$axis_line_y_size)})
 axis.line.y.colour <- reactive({colour(input$axis_line_y_colour)})
 axis.line.y.linetype <- reactive({linetype(input$axis_line_y_linetype)})
 axis.line.y.lineend <- reactive({lineend(input$axis_line_y_lineend)})
 
+axis.ticks.hide <- reactive({input$axis_ticks_hide})
+axis.ticks.size <- reactive({size(input$axis_ticks_size)})
+axis.ticks.colour <- reactive({colour(input$axis_ticks_colour)})
+axis.ticks.linetype <- reactive({linetype(input$axis_ticks_linetype)})
+axis.ticks.lineend <- reactive({lineend(input$axis_ticks_lineend)})
+
+axis.ticks.x.hide <- reactive({input$axis_ticks_x_hide})
+axis.ticks.x.size <- reactive({size(input$axis_ticks_x_size)})
+axis.ticks.x.colour <- reactive({colour(input$axis_ticks_x_colour)})
+axis.ticks.x.linetype <- reactive({linetype(input$axis_ticks_x_linetype)})
+axis.ticks.x.lineend <- reactive({lineend(input$axis_ticks_x_lineend)})
+
+axis.ticks.y.hide <- reactive({input$axis_ticks_y_hide})
+axis.ticks.y.size <- reactive({size(input$axis_ticks_y_size)})
+axis.ticks.y.colour <- reactive({colour(input$axis_ticks_y_colour)})
+axis.ticks.y.linetype <- reactive({linetype(input$axis_ticks_y_linetype)})
+axis.ticks.y.lineend <- reactive({lineend(input$axis_ticks_y_lineend)})
+
+axis.ticks.length <- reactive({size(input$axis_ticks_length)})
+axis.ticks.margin <- reactive({size(input$axis_ticks_margin)})
+
+panel.background.fill <- reactive({colour(input$panel_background_fill)})
+panel.background.colour <- reactive({colour(input$panel_background_colour)})
+panel.background.size <- reactive({size(input$panel_background_size)})
+panel.background.linetype <- reactive({linetype(input$panel_background_linetype)})
+
+panel.border.fill <- function(){NA}
+panel.border.colour <- reactive({colour(input$panel_border_colour)})
+panel.border.size <- reactive({size(input$panel_border_size)})
+panel.border.linetype <- reactive({linetype(input$panel_border_linetype)})
+
+panel.grid.hide <- reactive({input$panel_grid_hide})
+panel.grid.size <- reactive({size(input$panel_grid_size)})
+panel.grid.colour <- reactive({colour(input$panel_grid_colour)})
+panel.grid.linetype <- reactive({linetype(input$panel_grid_linetype)})
+panel.grid.lineend <- reactive({lineend(input$panel_grid_lineend)})
+
+panel.grid.major.hide <- reactive({input$panel_grid_major_hide})
+panel.grid.major.size <- reactive({size(input$panel_grid_major_size)})
+panel.grid.major.colour <- reactive({colour(input$panel_grid_major_colour)})
+panel.grid.major.linetype <- reactive({linetype(input$panel_grid_major_linetype)})
+panel.grid.major.lineend <- reactive({lineend(input$panel_grid_major_lineend)})
+
+panel.grid.major.x.hide <- reactive({input$panel_grid_major_x_hide})
+panel.grid.major.x.size <- reactive({size(input$panel_grid_major_x_size)})
+panel.grid.major.x.colour <- reactive({colour(input$panel_grid_major_x_colour)})
+panel.grid.major.x.linetype <- reactive({linetype(input$panel_grid_major_x_linetype)})
+panel.grid.major.x.lineend <- reactive({lineend(input$panel_grid_major_x_lineend)})
+
+panel.grid.major.y.hide <- reactive({input$panel_grid_major_y_hide})
+panel.grid.major.y.size <- reactive({size(input$panel_grid_major_y_size)})
+panel.grid.major.y.colour <- reactive({colour(input$panel_grid_major_y_colour)})
+panel.grid.major.y.linetype <- reactive({linetype(input$panel_grid_major_y_linetype)})
+panel.grid.major.y.lineend <- reactive({lineend(input$panel_grid_major_y_lineend)})
+
+panel.grid.minor.hide <- reactive({input$panel_grid_minor_hide})
+panel.grid.minor.size <- reactive({size(input$panel_grid_minor_size)})
+panel.grid.minor.colour <- reactive({colour(input$panel_grid_minor_colour)})
+panel.grid.minor.linetype <- reactive({linetype(input$panel_grid_minor_linetype)})
+panel.grid.minor.lineend <- reactive({lineend(input$panel_grid_minor_lineend)})
+
+panel.grid.minor.x.hide <- reactive({input$panel_grid_minor_x_hide})
+panel.grid.minor.x.size <- reactive({size(input$panel_grid_minor_x_size)})
+panel.grid.minor.x.colour <- reactive({colour(input$panel_grid_minor_x_colour)})
+panel.grid.minor.x.linetype <- reactive({linetype(input$panel_grid_minor_x_linetype)})
+panel.grid.minor.x.lineend <- reactive({lineend(input$panel_grid_minor_x_lineend)})
+
+panel.grid.minor.y.hide <- reactive({input$panel_grid_minor_y_hide})
+panel.grid.minor.y.size <- reactive({size(input$panel_grid_minor_y_size)})
+panel.grid.minor.y.colour <- reactive({colour(input$panel_grid_minor_y_colour)})
+panel.grid.minor.y.linetype <- reactive({linetype(input$panel_grid_minor_y_linetype)})
+panel.grid.minor.y.lineend <- reactive({lineend(input$panel_grid_minor_y_lineend)})
 
 rect.fill <- reactive({colour(input$rect_fill)})
 rect.colour <- reactive({colour(input$rect_colour)})
@@ -365,65 +372,51 @@ rect.size <- reactive({size(input$rect_size)})
 rect.linetype <- reactive({linetype(input$rect_linetype)})
 
 
-# test <- reactive(foo,{
-#     input$axis_line_size
-#   })
-
-  # tmp <- reactive({
-  #     input$axis.lineColour
-  #   })
-  # theme_set(theme_bw())
   output$plot <- renderPlot({
-    # print(theme_get())
     theme_set(theme_default())
-
 
     theme_update(
       line = element_line(size=line.size(),colour=line.colour(),linetype=line.linetype(),lineend=line.lineend()),
+      # rect = element_rect(fill = rect.fill(), colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype)),
+
      
       axis.line = element_line(size=axis.line.size(),linetype=axis.line.linetype(),colour=axis.line.colour(), lineend=axis.line.lineend()),
       axis.line.x = element_line(size=axis.line.x.size(), colour=axis.line.x.colour(), linetype=axis.line.x.linetype(), lineend=axis.line.x.lineend()),
-      axis.line.y = element_line(size=axis.line.y.size(),colour=axis.line.y.colour(),linetype=axis.line.y.linetype(),lineend=axis.line.y.lineend())
+      axis.line.y = element_line(size=axis.line.y.size(),colour=axis.line.y.colour(),linetype=axis.line.y.linetype(),lineend=axis.line.y.lineend()),
+
+      axis.ticks = element_line(size=axis.ticks.size(),linetype=axis.ticks.linetype(),colour=axis.ticks.colour(), lineend=axis.ticks.lineend()),
+      axis.ticks.x = element_line(size=axis.ticks.x.size(), colour=axis.ticks.x.colour(), linetype=axis.ticks.x.linetype(), lineend=axis.ticks.x.lineend()),
+      axis.ticks.y = element_line(size=axis.ticks.y.size(),colour=axis.ticks.y.colour(),linetype=axis.ticks.y.linetype(),lineend=axis.ticks.y.lineend()),
+      axis.ticks.length = unit(axis.ticks.length(),"points"),
+      axis.ticks.margin = unit(axis.ticks.margin(),"points"),
+
+      panel.background = element_rect(fill = panel.background.fill(), colour = panel.background.colour(), size = panel.background.size(), linetype = panel.background.linetype()),
+      panel.border = element_rect(fill = panel.border.fill(), colour = panel.border.colour(), size = panel.border.size(), linetype = panel.border.linetype()),
+      panel.grid = element_line(size=panel.grid.size(),linetype=panel.grid.linetype(),colour=panel.grid.colour(), lineend=panel.grid.lineend()),
+      panel.grid.major = element_line(size=panel.grid.major.size(),linetype=panel.grid.major.linetype(),colour=panel.grid.major.colour(), lineend=panel.grid.major.lineend()),
+      panel.grid.major.x = element_line(size=panel.grid.major.x.size(),linetype=panel.grid.major.x.linetype(),colour=panel.grid.major.x.colour(), lineend=panel.grid.major.x.lineend()),
+      panel.grid.major.y = element_line(size=panel.grid.major.y.size(),linetype=panel.grid.major.y.linetype(),colour=panel.grid.major.y.colour(), lineend=panel.grid.major.y.lineend()),
+      panel.grid.minor = element_line(size=panel.grid.minor.size(),linetype=panel.grid.minor.linetype(),colour=panel.grid.minor.colour(), lineend=panel.grid.minor.lineend()),
+      panel.grid.minor.x = element_line(size=panel.grid.minor.x.size(),linetype=panel.grid.minor.x.linetype(),colour=panel.grid.minor.x.colour(), lineend=panel.grid.minor.x.lineend()),
+      panel.grid.minor.y = element_line(size=panel.grid.minor.y.size(),linetype=panel.grid.minor.y.linetype(),colour=panel.grid.minor.y.colour(), lineend=panel.grid.minor.y.lineend())
+
     )
 
-      # rect = element_rect(fill = input$rect_fill, colour = input$rect_colour, size = input$rect_size, linetype = as.integer(input$rect_linetype))
-      # )
-      
-      print(theme_get()$axis.line)
+    if(line.hide()){theme_update(line = element_blank())}
+    if(axis.line.hide()){theme_update(axis.line = element_blank())}
+    if(axis.line.x.hide()){theme_update(axis.line.x = element_blank())}
+    if(axis.line.y.hide()){theme_update(axis.line.y = element_blank())}
+    if(axis.ticks.hide()){theme_update(axis.ticks = element_blank())}
+    if(axis.ticks.x.hide()){theme_update(axis.ticks.x = element_blank())}
+    if(axis.ticks.y.hide()){theme_update(axis.ticks.y = element_blank())}
+    if(panel.grid.hide()){theme_update(panel.grid = element_blank())}
+    if(panel.grid.major.hide()){theme_update(panel.grid.major = element_blank())}
+    if(panel.grid.major.x.hide()){theme_update(panel.grid.major.x = element_blank())}
+    if(panel.grid.major.y.hide()){theme_update(panel.grid.major.y = element_blank())}
+    if(panel.grid.minor.hide()){theme_update(panel.grid.minor = element_blank())}
+    if(panel.grid.minor.x.hide()){theme_update(panel.grid.minor.x = element_blank())}
+    if(panel.grid.minor.y.hide()){theme_update(panel.grid.minor.y = element_blank())}
 
-
-
-###############################################################################################################################################################################################################
-    
-    #background, margins, title
-    # plot.background = element_rect(fill=paste("#",input$plotBgColour,sep=""), colour= "black"),
-    # plot.margin = unit(c(2.8835,.582083,2.0748,.9378), "cm"),
-    # plot.title = element_text(vjust = 7.9746, hjust = 0, size = 20, family = "ITC Franklin Gothic Std Demi Condensed"),
-
-    # #plot area and grid
-    # panel.border = element_blank(),
-    # panel.background = element_rect(fill="transparent", size = 0),
-    # panel.grid.minor = element_blank(),
-    # panel.grid.major = element_line(size=.4703669, colour = "#FFFFFF"),
-
-    # #axes, ticks, and axis labels
-    # axis.line = element_line(size=.4703669, colour = "#FFFFFF"),
-    # axis.ticks = element_blank(),
-    # axis.ticks.length = unit(.20888, "cm"),
-    # axis.text.x = element_text(size = 12, family = "ITC Franklin Gothic Std Demi"),
-    # axis.text.y = element_text(size = 12, family = "ITC Franklin Gothic Std Demi"),
-    # axis.title.x = element_text(vjust = -2.1804, size = 12, family = "Franklin Gothic Book"),
-    # axis.title.y = element_text(vjust = -1.2633, angle = -90, size = 12, family = "Franklin Gothic Book"),
-
-    # #legend
-    # legend.background = element_rect(fill = "#E5E2E0", size = .4703669, colour = "#C0C0BB"),
-    # legend.text = element_text(size = 10, family = "Franklin Gothic Book"),
-    # legend.title = element_blank(),
-    # legend.key = element_rect(fill="#E5E2E0", colour= "#E5E2E0", size = 0),
-    # legend.key.height = unit(1, "cm"),
-    # legend.key.width = unit(.645,"cm"),
-    # legend.margin = unit(1.5741,"cm")
-  # theme_set(theme_current)
 
   scale_colour_discrete <- function(...) scale_colour_custom(..., palette="Set1")
   scale_fill_discrete <- function(...) scale_fill_custom(... , palette="Set1")

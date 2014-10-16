@@ -4,34 +4,129 @@ import "ggplot1"
 import "ggplot2"
 clear
 require ggplot2
-require('ggplot2')
-require('reshape2')
-require('shiny')
+setwd('~/ggShiny')#
+library('ggplot2')#
+library('shiny')#
+library('extrafont')#
+library('reshape2')#
+library('ggthemes')
 runApp('ggShinyApp')
-them_bw()
+runApp('ggShinyApp')
+theme_fivethirtyeight()
+install.packages('ggtheme')
+install.packages('ggthemes')
+theme_fivethirtyeight()
+theme_fivethirtyeight
+print(ggplot(mtcars, aes(wt, mpg))+geom_point(aes(colour = factor(cyl)))+ggtitle("Title"))
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+inTheme
+inTheme
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+deployApp('ggShinyApp')
+library('shinyapps')
+deployApp('ggShinyApp')
+deployApp('ggShinyApp')
+deployApp('ggShinyApp')
+deployApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_grey()
+theme_economist()
+theme_wsj()
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+paste("axis.line","Colour",sep="")
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_grey()
+theme_grey()
+theme_wsj()
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_grey()$axis.line.x
+theme_grey()$axis.line
+theme_grey()$axis.linex
+theme_grey()$axis.x
+theme_grey()$axis.line.x
+theme_grey()$axis.line
+theme_grey$axis.line
+theme_grey()$axis
+theme_grey()$axis.line
+theme_wsj()$axis.line
+theme_wsj()$axis.line.x
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+list(1,2,NULL)
+list(1,2,NULL)
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+?Logic
+runApp('ggShinyApp')
+?Logic
+?Control
+?ifelse
+?if
+?if
+?&
+help(&)
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+deployApp('ggShinyApp')
+runApp('ggShinyApp')
 theme_bw()
+theme_bw()$axis
 theme_bw()$line
-theme_bw()$linetheme_new <- theme_set(theme_bw())#
-    theme_new <- theme_update(#
-#
-    line = element_line(size=2, colour = "red", linetype = 1, lineend = "butt")#
-    )
-theme_new <- theme_set(theme_bw())#
-    theme_new <- theme_update(#
-#
-    line = element_line(size=2, colour = "red", linetype = 1, lineend = "butt")#
-    )
-ggplot(mtcars)
-print(qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(cyl)) + coord_cartesian(ylim = c(0, 15)) + ggtitle("Title"))
-theme_bw()$linetheme_new <- theme_set(theme_bw())#
-    theme_new <- theme_update(#
-#
-    line = element_line(size=2, colour = "red", linetype = 1, lineend = "butt")#
-    )
-theme_bw()$linetheme_new <- theme_set(theme_bw())#
-    theme_new <- theme_update(#
-#
-    line = element_line(size=2, colour = "red", linetype = 1, lineend = "butt")#
-    )
-print(qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(cyl)) + coord_cartesian(ylim = c(0, 15)) + ggtitle("Title"))
+theme_bw()$linetitle
+theme_bw()$title
+theme_bw()$text
+theme_bw()$title
+theme_bw()$axis.text
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_default()$axis.line
+theme_default()$line
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_default()$line
+theme_default()$axis.line
+theme_economist()$axis.line
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+deployApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_grey()$axis.ticks.length
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+runApp('ggShinyApp')
+theme_economist()$panel.grid
+theme_economist()$panel.grid.x
+theme_economist()$panel.grid.major
+theme_economist()$panel.grid.major.x
+theme_economist()$panel.grid.major
+theme_economist()$panel.grid.minor
 runApp('ggShinyApp')
