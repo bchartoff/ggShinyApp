@@ -74,6 +74,28 @@ function init() {
 	        });
 	    }
 	}
+
+
+// Start of slider code
+    var sliders = $(".jslider-pointer");
+    for (var i = 0; i < sliders.length; i++) {
+	    var slider = sliders[i];
+	    if(slider.addEventListener){
+	        slider.addEventListener("click",
+	        function() {
+                console.log("foo")
+			   
+	        },
+	        false);
+	    } else if(slider.attachEvent){
+	        slider.attachEvent("onclick", 
+	        function() {
+			   console.log("bar")
+	        });
+	    }
+	}
+
+
 };
 
 if(window.addEventListener){

@@ -53,10 +53,17 @@ input[id *= _size]{
 	width: 42%;
 }
 
-label[for *= lineheight], label[for = axis_ticks_length],label[for = axis_ticks_margin],label[for = panel_margin],label[for = plot_margin],label[for = legend_margin],label[for = legend_key_size],label[for = legend_key_height],label[for = legend_key_width]{
+label[for *= plot_margin]{
+	width: 50%;
+}
+input[id *=plot_margin]{
+	width: 30%;
+}
+
+label[for *= lineheight], label[for = axis_ticks_length],label[for = axis_ticks_margin],label[for = panel_margin],label[for = legend_margin],label[for = legend_key_size],label[for = legend_key_height],label[for = legend_key_width]{
 	width: 63%;
 }
-input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#panel_margin,input#plot_margin,input#legend_margin,input#legend_key_size,input#legend_key_width,input#legend_key_height{
+input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#panel_margin,input#legend_margin,input#legend_key_size,input#legend_key_width,input#legend_key_height{
 	width: 20%;
 }
 
@@ -75,10 +82,18 @@ input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#p
 }
 
 .tab-content{
-	height:500px;
+	height:600px;
 	padding-left:20px;
 }
 
 
 
+.color{
+	z-index: 1;
+}
 
+
+input[id *= _hidden]{
+	visibility: hidden;
+	height: 0px;
+}

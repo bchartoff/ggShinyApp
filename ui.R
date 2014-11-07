@@ -4,10 +4,11 @@ library(extrafont)
 
 
 source('lib/theme_default.R')
+source("lib/customSlider/R/customSliderInput.R")
+
 
 
 jscolorInput <- function(id, default) {
-  print(default)
   tagList(
     singleton(tags$head(tags$script(src = "ShinySky/inst/www/ss-jscolor.js"))),
     singleton(tags$head(tags$script(src = "ShinySky/inst/www/jscolor/jscolor.js"))),
@@ -61,25 +62,27 @@ lineOpts <- function(title,element,width,isParent=FALSE,axis_ticks=FALSE){
                         'src=\"images/lineTypes/' + item.value + '_line.png\" /></div>';
                   }
               }"
-            )))),
+                        ))
+                      )
+          ),
+          selectizeInput(paste(element,"lineend",sep="_"),
+          label = "End: ",
+          choices = promote_list_item(lineEnds, theme_current[name][[1]]["linened"][[1]],isParent),
+          options = list(
+            dropdownParent = 'body',
+            render = I(sprintf(
+            "{
+                option: function(item, escape) {
+                  return '<div><img ' +
+                      'src=\"images/lineEnds/' + item.value + '_end.png\" />' + ' ' + item.value + '</div>';
+                }
+            }"
+                      ))
+                    )
+          ),
           numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[name][[1]]["size"][[1]]),
           tags$label("Color: "),
           jscolorInput(paste(element,"colour",sep="_"), theme_current[name][[1]]["colour"][[1]]),
-          selectizeInput(paste(element,"lineend",sep="_"),
-            label = "End: ",
-            choices = promote_list_item(lineEnds, theme_current[name][[1]]["linened"][[1]],isParent),
-            options = list(
-              dropdownParent = 'body',
-              render = I(sprintf(
-              "{
-                  option: function(item, escape) {
-                    return '<div><img ' +
-                        'src=\"images/lineEnds/' + item.value + '_end.png\" />' + ' ' + item.value + '</div>';
-                  }
-              }"
-                        ))
-                      )
-                    ),
           length,
           margin,
           checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
@@ -96,7 +99,7 @@ rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, stri
   }
 
   if(strip_background){
-    panel_margin <- numericInput("panel_margin",'Facet Label Margin (pt): ',value= theme_current$panel.margin)
+    panel_margin <- numericInput("panel_margin",'Facet Panel Margin (pt): ',value= theme_current$panel.margin)
   }
   else{
     panel_margin <- NULL
@@ -110,7 +113,7 @@ rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, stri
   }
 
   if(legend_key){
-    key_size <- numericInput("legend_key_size",'Key Size (pt): ',value= theme_current$legend.key.size)
+    key_size <- numericInput("legend_key_dimensions",'Key Size (pt): ',value= theme_current$legend.key.size)
     key_height <- numericInput("legend_key_height",'Key Height (pt): ',value= theme_current$legend.key.height)
     key_width <- numericInput("legend_key_width",'Key Width (pt): ',value= theme_current$legend.key.width)
   }
@@ -150,11 +153,19 @@ rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, stri
 }
 
 fontOpts <- function(title,element,width,isParent=FALSE){
+   if(isParent){
+    hidden <- 1
+    value <- 0
+   }
+   else{
+    hidden <- 0
+    value <- NULL
+   }
    col <- column(width,
           h4(title),
            selectizeInput(paste(element,"family",sep="_"),
             label="font",
-            choices= promote_list_item(fonts(), theme_current[element][[1]]["font"][[1]],isParent),
+            choices= promote_list_item(c("default","",fonts()), theme_current[element][[1]]["font"][[1]],isParent),
             options = list(
               dropdownParent = 'body'
             )),
@@ -167,9 +178,12 @@ fontOpts <- function(title,element,width,isParent=FALSE){
           numericInput(paste(element,"size",sep="_"),'Size: ',value= theme_current[element][[1]]["size"][[1]]),
           tags$label("Color: "),
           jscolorInput(paste(element,"colour",sep="_"), theme_current[element][[1]]["colour"][[1]]),
-          sliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= 0.5),
-          sliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= 0.5),
-          sliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 1, value= 0),
+          customSliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= value),
+          numericInput(paste(element,"hjust_hidden",sep="_"),'',value=hidden),
+          customSliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= value),
+          numericInput(paste(element,"vjust_hidden",sep="_"),'',value=hidden),
+          customSliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 360, value= value),
+          numericInput(paste(element,"angle_hidden",sep="_"),'',value=hidden),
           numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]]),
           checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
         )
@@ -204,7 +218,8 @@ shinyUI(fluidPage(theme = "css/main.css",
                           "Scatter plot: 3 colours" = 4,
                           "Scatter plot: 9 colours" = 5,
                           "Line chart: 3 colours" = 6,
-                          "Scatter plot: Facet Grid" = 7), selected = 3
+                          "Scatter plot: Facet Grid" = 7,
+                          "Histogram: 22 colours" = 8), selected = 3
           ),
           numericInput('plotWidth', 'Plot Width', value = 600),
           div('x'),
@@ -232,7 +247,7 @@ shinyUI(fluidPage(theme = "css/main.css",
       lineOpts("All Lines","line",3,isParent=TRUE),
       rectOpts("All Rectangles","rect",3,isParent=TRUE),
       fontOpts("All Text","text",3,isParent=TRUE),
-      fontOpts("All Titles","title",3,isParent=TRUE)
+      fontOpts("All Titles","title",3)
 
     ),
     tabPanel("Axis Lines",
@@ -303,7 +318,17 @@ shinyUI(fluidPage(theme = "css/main.css",
       )
 )
     ),
-    tabPanel("Legend Text"),
+    tabPanel("Legend Text",
+      fontOpts("Legend Title","legend_title",3),
+      fontOpts("Legend Text","legend_text",3),
+      column(3,
+        h4("Text Alignment"),
+        customSliderInput("legend_title_align",'Title Align: ', min = 0, max = 1, value= NULL),
+        numericInput('legend_title_align_hidden','',value=0),
+        customSliderInput("legend_text_align",'Text Align: ', min = 0, max = 1, value= NULL),
+        numericInput('legend_text_align_hidden','',value=0)
+        )
+      ),
     tabPanel("Plotting Area",
       rectOpts("Plot Background","panel_background",3),
       rectOpts("Plot Border","panel_border",3,panel_border=TRUE),
@@ -324,7 +349,10 @@ shinyUI(fluidPage(theme = "css/main.css",
       fontOpts("Plot Title","plot_title",3),
       column(3,
         h4("Plot Margin"),
-        numericInput("plot_margin","Plot Margin (pt): ",value = theme_current$plot.margin)
+        numericInput("plot_margin_top","Top (pt): ",value = as.numeric(theme_default()$plot.margin[1])),
+        numericInput("plot_margin_right","Right (pt): ",value = as.numeric(theme_default()$plot.margin[2])),
+        numericInput("plot_margin_bottom","Bottom (pt): ",value = as.numeric(theme_default()$plot.margin[3])),
+        numericInput("plot_margin_left","Left (pt): ",value = as.numeric(theme_default()$plot.margin[4]))
       )
     ),
     tabPanel("Facet Labels",
@@ -335,6 +363,11 @@ shinyUI(fluidPage(theme = "css/main.css",
     )
   ),
   hr(),
-  tags$head(tags$script(src="js/remove_element.js"))
+  tags$head(tags$script(src="js/remove_element.js")),
+  tags$script(src="js/null_slider.js")
+  # tags$head(tags$script(src = "js/jquery.slider.js")),
+  # tags$head(tags$link(rel = "stylsheet", type = "text/css", href = "css/jquery.slider.min.css"))
+  # )
+
 
 ))
