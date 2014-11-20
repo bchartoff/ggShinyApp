@@ -2,6 +2,7 @@ library('shiny')
 library('ggplot2')
 library('reshape2')
 library('RColorBrewer')
+library('pryr')
 
 source('lib/grid/unit.R')
 source('lib/theme_default.R')
@@ -247,6 +248,16 @@ size <- function(size){
   val
 }
 
+key <- function(key){
+  if(is.na(key)){
+    val <- NULL
+  }
+  else{
+    val <- unit(key,"points")
+  }
+  val
+}
+
 colour <- function(colour){
   if(colour == ""){
     val <- NULL
@@ -288,6 +299,25 @@ slider <- function(slider, hidden){
     val <- slider
   }
   val
+}
+
+position <- function(text,px,py){
+  if(is.na(px) || is.na(py)){
+    val <- text
+  }
+  else{
+    val <- c(px,py)
+  }
+  val
+}
+
+justification <- function(jx,jy){
+  if(is.na(jx) || is.na(jy)){
+    val <- NULL
+  }
+  else{
+    val <- c(jx,jy)
+  }
 }
 
 #tab 1
@@ -442,9 +472,13 @@ legend.key.size <- reactive({size(input$legend_key_size)})
 legend.key.linetype <- reactive({linetype(input$legend_key_linetype)})
 
 legend.key.dimensions <- reactive({size(input$legend_key_dimensions)})
-legend.key.height <- reactive({size(input$legend_key_height)})
-legend.key.width <- reactive({size(input$legend_key_width)})
+legend.key.height <- reactive({key(input$legend_key_height)})
+legend.key.width <- reactive({key(input$legend_key_width)})
 
+legend.direction <- reactive({dropdownText(input$legend_direction)})
+legend.box <- reactive({dropdownText(input$legend_box)})
+legend.position <- reactive({position(dropdownText(input$legend_position),input$legend_position_x,input$legend_position_y)})
+legend.justification <- reactive({justification(input$legend_justification_x,input$legend_justification_y)})
 
 ###################
 
@@ -596,10 +630,10 @@ strip.text.y.lineheight <- reactive({size(input$strip_text_y_lineheight)})
 
   output$plot <- renderPlot({
 
-    scale_colour_discrete <- function(...) scale_colour_custom(..., palette="Set1")
-scale_fill_discrete <- function(...) scale_fill_custom(... , palette="Set1")
-t = custom_pal(9,palette="Set1")
-extendedPalette = colorRampPalette(custom_pal(palette="Set1")(9))
+  scale_colour_discrete <- function(...) scale_colour_custom(..., palette="Set1")
+  scale_fill_discrete <- function(...) scale_fill_custom(... , palette="Set1")
+  t = custom_pal(9,palette="Set1")
+  extendedPalette = colorRampPalette(custom_pal(palette="Set1")(9))
 
 
     theme_set(theme_default())
@@ -637,9 +671,13 @@ extendedPalette = colorRampPalette(custom_pal(palette="Set1")(9))
       legend.background = element_rect(fill = legend.background.fill(), colour = legend.background.colour(), size = legend.background.size(), linetype = legend.background.linetype()),
       legend.key = element_rect(fill = legend.key.fill(), colour = legend.key.colour(), size = legend.key.size(), linetype = legend.key.linetype()),
       legend.key.size = unit(legend.key.dimensions(),"points"),
-      # legend.key.height = unit(legend.key.height(),"points"),
-      # legend.key.width = unit(legend.key.width(),"points"),
+      legend.key.height = legend.key.height(),
+      legend.key.width = legend.key.width(),
       legend.margin = unit(legend.margin(),"points"),
+      legend.direction = legend.direction(),
+      legend.box = legend.box(),
+      legend.position = legend.position(),
+      legend.justification = legend.justification(),
 
       # #tab 7
       legend.title = element_text(family=legend.title.family(),face=legend.title.face(),size=legend.title.size(),colour=legend.title.colour(),hjust=legend.title.hjust(),vjust=legend.title.vjust(),angle=legend.title.angle(),lineheight=legend.title.lineheight()),
@@ -724,13 +762,13 @@ extendedPalette = colorRampPalette(custom_pal(palette="Set1")(9))
 
 
     if (input$sampleChart == 1){
-        print(ggplot(mtcars, aes(factor(cyl))) + geom_bar() + coord_cartesian(ylim = c(0, 25))+ggtitle("Title"))
+        print(ggplot(mtcars, aes(factor(cyl))) + geom_bar() + scale_fill_discrete() + coord_cartesian(ylim = c(0, 25))+ggtitle("Title"))
     }
     else if (input$sampleChart == 2){
         print(qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(cyl)) + coord_cartesian(ylim = c(0, 15)) + ggtitle("Title"))
     }
     else if (input$sampleChart == 3){
-        print(ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar() + ggtitle("Title") + coord_cartesian(ylim = c(0, 15000)))
+        print(ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar() + scale_fill_discrete() + ggtitle("Title") + coord_cartesian(ylim = c(0, 15000)))
     }
     else if (input$sampleChart == 4){
         print(ggplot(mtcars, aes(wt, mpg))+geom_point(aes(colour = factor(cyl))) + scale_colour_discrete() + ggtitle("Title"))
@@ -754,5 +792,46 @@ extendedPalette = colorRampPalette(custom_pal(palette="Set1")(9))
  
     
   }, height = plotHeight, width = plotWidth)
+
+
+parse_theme <- function(name,element){
+  in_str <- paste(deparse(element),collapse="")
+  #str_match returns df w/ 1st column entire string, then match groups in subsequent columns
+  #so match groups are 2-indexed (vs 1-indexed or 0-indexed)
+  type <- str_match(in_str,"(\")(element_[a-z]+)(\")")[,3]
+  if(in_str == "NULL"){
+    out_str <- "NULL"
+  }
+  else if(grepl("element_blank",in_str)){
+    out_str <- "element_blank()"
+  }
+  else if(grepl(".Names",in_str)){
+    obj <- str_match(in_str,"(^structure\\(list\\()(.*)(, \\.Names)")[,3]
+    out_str <- paste(type,"(",obj,sep="")
+  }
+  else{
+    match <- str_match(in_str,"(^structure\\()(.*)(, unit = )(\".*\")(,)")
+    size <- match[,3]
+    unit <- match[,5]
+    out_str <- paste("unit(",size,", ",unit,")",sep="")
+  }
+  val <- paste(name,"=",out_str)
+  val
+}
+
+
+
+output$downloadData <- downloadHandler(
+  filename = function() {
+    paste('test-', Sys.Date(), '.R', sep="")
+  },
+  content = function(file) {
+    tmp <- mlply(cbind(names(theme_get()), theme_get()),parse_theme)
+    writeLines(gsub("\\s+"," ",toString(tmp)),file)
+  }
+)
   
 })
+
+
+

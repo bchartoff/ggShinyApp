@@ -202,7 +202,10 @@ faces <- list("plain", "italic", "bold", "bold.italic")
 shinyUI(fluidPage(theme = "css/main.css",
  
   headerPanel("ggplot2 Theme Builder"),
-  plotOutput(outputId = 'plot', width = "100%", height = "100%"),
+  fluidRow(
+    plotOutput(outputId = 'plot', width = "100%", height = "100%"),
+    downloadButton('downloadData', 'Download the R script')
+  ),
   hr(),
   navlistPanel(widths = c(3,9),
     tabPanel("Theme Builder Settings",
@@ -221,9 +224,9 @@ shinyUI(fluidPage(theme = "css/main.css",
                           "Scatter plot: Facet Grid" = 7,
                           "Histogram: 22 colours" = 8), selected = 3
           ),
-          numericInput('plotWidth', 'Plot Width', value = 600),
-          div('x'),
-          numericInput('plotHeight', 'Plot Height', value = 400)
+          numericInput('plotWidth', 'Plot Dimensions (w x h)', value = 600),
+          div(class='dimensionx_x','x'),
+          numericInput('plotHeight', '', value = 400)
       )
     ),
     tabPanel("Global colour palette",
@@ -281,8 +284,9 @@ shinyUI(fluidPage(theme = "css/main.css",
               dropdownParent = 'body'
             ),
             label = "Legend Layout:", 
-            choices = list( "horizontal",
-                            "vertical"
+            choices = list( "",
+                            "vertical",
+                            "horizontal"
                           )
           ),
         selectizeInput("legend_box",
@@ -300,21 +304,21 @@ shinyUI(fluidPage(theme = "css/main.css",
               dropdownParent = 'body'
             ),
             label = "Legend Position:", 
-            choices = list( "left",
-                            "right",
+            choices = list( "right",
+                            "left",
                             "bottom",
                             "top"
                           )
         ),
         # div(id="legend_position_description")
         helpText("Or, you can enter a vector specifying Legend Position (0 to 1). Manual vector input takes precedence over the dropdown above. Delete both manual inputs to default back to the dropdown."),
-        numericInput("legend_position_x",NULL,value= theme_current$panel.margin),
-        div('x'),
-        numericInput("legend_position_y",NULL,value= theme_current$panel.margin),
+        numericInput("legend_position_x",NULL,value= NULL),
+        div(class= 'comma',','),
+        numericInput("legend_position_y",NULL,value= NULL),
         helpText("For manual positions, optionally specify origin point as vector (0 to 1)"),
-        numericInput("legend_justification_x",NULL,value= theme_current$panel.margin),
-        div('x'),
-        numericInput("legend_justification_y",NULL,value= theme_current$panel.margin)
+        numericInput("legend_justification_x",NULL,value= NULL),
+        div(class = 'comma', ','),
+        numericInput("legend_justification_y",NULL,value= NULL)
       )
 )
     ),

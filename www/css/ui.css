@@ -60,10 +60,10 @@ input[id *=plot_margin]{
 	width: 30%;
 }
 
-label[for *= lineheight], label[for = axis_ticks_length],label[for = axis_ticks_margin],label[for = panel_margin],label[for = legend_margin],label[for = legend_key_size],label[for = legend_key_height],label[for = legend_key_width]{
+label[for *= lineheight], label[for = axis_ticks_length],label[for = axis_ticks_margin],label[for = panel_margin],label[for = legend_margin],label[for = legend_key_dimensions],label[for = legend_key_height],label[for = legend_key_width]{
 	width: 63%;
 }
-input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#panel_margin,input#legend_margin,input#legend_key_size,input#legend_key_width,input#legend_key_height{
+input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#panel_margin,input#legend_margin,input#legend_key_dimensions,input#legend_key_width,input#legend_key_height{
 	width: 20%;
 }
 
@@ -96,4 +96,32 @@ input[id *= lineheight], input#axis_ticks_length,input#axis_ticks_margin,input#p
 input[id *= _hidden]{
 	visibility: hidden;
 	height: 0px;
+}
+
+
+.dimensionx_x{
+	display: inline;
+	margin-right: 1px;
+	margin-left: 1px;
+
+	font-size: 18pt;
+}
+
+label[for = plotHeight]{
+	display: none;
+}
+
+#plotHeight{
+	display: inline;
+}
+
+.comma{
+	display: inline;
+	margin-left:1px;
+	margin-right:1px;
+}
+
+#legend_position_y, #legend_justification_y{
+	margin-left: 0px;
+	float:none;
 }
