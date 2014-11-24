@@ -857,7 +857,7 @@ output$downloadData <- downloadHandler(
     output <- gsub("REPLACE_PLOT_HEIGHT",toString(plotHeight()/72.0),output)
 
     theme_string <- mlply(cbind(names(theme_get()), theme_get()),parse_theme)
-    output <- gsub("REPLACE_THEME",toString(theme_string),output)
+    output <- gsub("REPLACE_THEME",gsub("\\s+"," ",toString(theme_string)),output)
 
     writeLines(output,file)
   }
