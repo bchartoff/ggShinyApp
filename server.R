@@ -2,7 +2,8 @@ library('shiny')
 library('ggplot2')
 library('reshape2')
 library('RColorBrewer')
-library('pryr')
+library('plyr')
+library('stringr')
 
 source('lib/grid/unit.R')
 source('lib/theme_default.R')
@@ -303,6 +304,7 @@ slider <- function(slider, hidden){
 
 position <- function(text,px,py){
   if(is.na(px) || is.na(py)){
+    print(text)
     val <- text
   }
   else{
@@ -625,6 +627,16 @@ strip.text.y.vjust <- reactive({slider(input$strip_text_y_vjust,input$strip_text
 strip.text.y.angle <- reactive({slider(input$strip_text_y_angle,input$strip_text_y_angle_hidden)})
 strip.text.y.lineheight <- reactive({size(input$strip_text_y_lineheight)})
 
+pal.color.1 <- reactive(input$palColour1)
+pal.color.2 <- reactive(input$palColour2)
+pal.color.3 <- reactive(input$palColour3)
+pal.color.4 <- reactive(input$palColour4)
+pal.color.5 <- reactive(input$palColour5)
+pal.color.6 <- reactive(input$palColour6)
+pal.color.7 <- reactive(input$palColour7)
+pal.color.8 <- reactive(input$palColour8)
+pal.color.9 <- reactive(input$palColour9)
+
 
 
 
@@ -809,11 +821,14 @@ parse_theme <- function(name,element){
     obj <- str_match(in_str,"(^structure\\(list\\()(.*)(, \\.Names)")[,3]
     out_str <- paste(type,"(",obj,sep="")
   }
-  else{
+  else if(grepl("structure",in_str)){
     match <- str_match(in_str,"(^structure\\()(.*)(, unit = )(\".*\")(,)")
     size <- match[,3]
     unit <- match[,5]
     out_str <- paste("unit(",size,", ",unit,")",sep="")
+  }
+  else{
+    out_str <- in_str
   }
   val <- paste(name,"=",out_str)
   val
@@ -823,11 +838,27 @@ parse_theme <- function(name,element){
 
 output$downloadData <- downloadHandler(
   filename = function() {
-    paste('test-', Sys.Date(), '.R', sep="")
+    "ggplot_styling.R"
   },
   content = function(file) {
-    tmp <- mlply(cbind(names(theme_get()), theme_get()),parse_theme)
-    writeLines(gsub("\\s+"," ",toString(tmp)),file)
+    template <- readLines("output_template.R")
+    output <- gsub("REPLACE_COLOR_ONE",toString(pal.color.1()),template)
+    output <- gsub("REPLACE_COLOR_TWO",toString(pal.color.2()),output)
+    output <- gsub("REPLACE_COLOR_THREE",toString(pal.color.3()),output)
+    output <- gsub("REPLACE_COLOR_FOUR",toString(pal.color.4()),output)
+    output <- gsub("REPLACE_COLOR_FIVE",toString(pal.color.5()),output)
+    output <- gsub("REPLACE_COLOR_SIX",toString(pal.color.6()),output)
+    output <- gsub("REPLACE_COLOR_SEVEN",toString(pal.color.7()),output)
+    output <- gsub("REPLACE_COLOR_EIGHT",toString(pal.color.8()),output)
+    output <- gsub("REPLACE_COLOR_NINE",toString(pal.color.9()),output)
+
+    output <- gsub("REPLACE_PLOT_WIDTH",toString(plotWidth()/72.0),output)
+    output <- gsub("REPLACE_PLOT_HEIGHT",toString(plotHeight()/72.0),output)
+
+    theme_string <- mlply(cbind(names(theme_get()), theme_get()),parse_theme)
+    output <- gsub("REPLACE_THEME",toString(theme_string),output)
+
+    writeLines(output,file)
   }
 )
   
