@@ -2,6 +2,45 @@ library('ggplot2')
 library('grid')
 library('RColorBrewer')
 
+########### Example plots #################
+
+####Bar
+##1 color
+#print(ggplot(mtcars, aes(factor(cyl))) + geom_bar() + coord_cartesian(ylim = c(0, 100))+ggtitle("Title"))
+
+##3 colors
+#print(qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(cyl))+ggtitle("Title"))
+
+##5 colors
+#print(ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar() +ggtitle("Title") + coord_cartesian(ylim = c(0, 15000)))
+
+
+####Scatter
+##3 colors
+#print(ggplot(mtcars, aes(wt, mpg))+geom_point(aes(colour = factor(cyl)))+ggtitle("Title"))
+
+##9 colors
+ # dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+ # d <- qplot(carat, price, data=dsamp, colour=clarity, size = 3)
+ # print(d+ggtitle("Title"))
+
+###Line
+##3 colors
+# mtcars.long <- melt(mtcars, id = "mpg", measure = c("disp", "hp", "wt"))
+# print(ggplot(mtcars.long, aes(mpg, value, colour = variable)) + geom_line()+ggtitle("Title"))
+
+###Facet Grid
+# p <- ggplot(mtcars, aes(mpg, wt)) + geom_point() + ggtitle("Title")
+# print(p + facet_grid(vs ~ am, margins=TRUE))
+
+###Histogram
+##22 colors
+# print(ggplot(mtcars) + scale_fill_manual(values = extendedPalette(22)) + geom_histogram(aes(factor(hp), fill=factor(hp))))
+
+
+####################################
+
+
 #resize window to 650 px width
 quartz.options(width = REPLACE_PLOT_WIDTH, height = REPLACE_PLOT_HEIGHT, dpi = 72)
 

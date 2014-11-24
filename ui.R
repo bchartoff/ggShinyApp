@@ -204,12 +204,15 @@ shinyUI(fluidPage(theme = "css/main.css",
   headerPanel("ggplot2 Theme Builder"),
   fluidRow(
     plotOutput(outputId = 'plot', width = "100%", height = "100%"),
-    downloadButton('downloadData', 'Download the R script')
+    h4("Download the Theming Scripts"),
+    downloadButton('downloadData', 'R Script for theme (run every R session)'),
+    downloadButton('installationScript', 'Installation script (run once)')
   ),
   hr(),
   navlistPanel(widths = c(3,9),
     tabPanel("Theme Builder Settings",
         column(12,
+          helpText("See the output R script, \"ggplot_styling.R\", for example code to build these charts"),
           selectizeInput("sampleChart",
             options = list(
               dropdownParent = 'body'
@@ -230,20 +233,27 @@ shinyUI(fluidPage(theme = "css/main.css",
       )
     ),
     tabPanel("Global colour palette",
-      column(4,
-        jscolorInput("palColour1", nineColours[1]),
-        jscolorInput("palColour2", nineColours[4]),
-        jscolorInput("palColour3", nineColours[7])
+      fluidRow(
+        helpText("NOTE: This script is intentionally built to limit themes to 9 colors of fewer. Graphs with greater than 9 colors can become difficult to parse, or differentiate groupings. However, if you want to build a graph with more colors (for the purposes of sketching a large data set, for example), you can use the extendedPalette function:"),
+        helpText("p <- ggplot(data)"),
+        helpText("p + scale_fill_manual(values = extendedPalette(NUMBER_OF_CATEGORIES))")
       ),
-      column(4,
-        jscolorInput("palColour4", nineColours[2]),
-        jscolorInput("palColour5", nineColours[5]),
-        jscolorInput("palColour6", nineColours[8])
-      ),
-      column(4,
-        jscolorInput("palColour7", nineColours[3]),
-        jscolorInput("palColour8", nineColours[6]),
-        jscolorInput("palColour9", nineColours[9])
+      fluidRow(
+        column(4,
+          jscolorInput("palColour1", nineColours[1]),
+          jscolorInput("palColour2", nineColours[4]),
+          jscolorInput("palColour3", nineColours[7])
+        ),
+        column(4,
+          jscolorInput("palColour4", nineColours[2]),
+          jscolorInput("palColour5", nineColours[5]),
+          jscolorInput("palColour6", nineColours[8])
+        ),
+        column(4,
+          jscolorInput("palColour7", nineColours[3]),
+          jscolorInput("palColour8", nineColours[6]),
+          jscolorInput("palColour9", nineColours[9])
+        )
       )
     ),
     tabPanel("Parent Elements",

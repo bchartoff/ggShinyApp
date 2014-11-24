@@ -304,7 +304,6 @@ slider <- function(slider, hidden){
 
 position <- function(text,px,py){
   if(is.na(px) || is.na(py)){
-    print(text)
     val <- text
   }
   else{
@@ -772,7 +771,9 @@ pal.color.9 <- reactive(input$palColour9)
     if(strip.text.x.hide()){theme_update(strip.text.x = element_blank())}
     if(strip.text.y.hide()){theme_update(strip.text.y = element_blank())}
 
-
+#Note, because of Shiny reactions, I add `scale_fill_discrete()` or `scale_colour_discrete()` to each plot manually
+#When the final (downloadable) script is run, there is no need to add color scales to each graph object, they
+#are set as defaults.
     if (input$sampleChart == 1){
         print(ggplot(mtcars, aes(factor(cyl))) + geom_bar() + scale_fill_discrete() + coord_cartesian(ylim = c(0, 25))+ggtitle("Title"))
     }
