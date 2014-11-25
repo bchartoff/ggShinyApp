@@ -39,8 +39,8 @@ promote_list_item <- function(list,item,includeFirstOption){
 
 lineOpts <- function(title,element,width,isParent=FALSE,axis_ticks=FALSE){
   if(axis_ticks){
-    length <- numericInput("axis_ticks_length",'Tick Length (pt): ',value= theme_current$axis.ticks.length)
-    margin <- numericInput("axis_ticks_margin",'Tick Margin (pt): ',value= theme_current$axis.ticks.margin)
+    length <- numericInput("axis_ticks_length",'Tick Length (pt): ',value= theme_current$axis.ticks.length, step = 0.1)
+    margin <- numericInput("axis_ticks_margin",'Tick Margin (pt): ',value= theme_current$axis.ticks.margin, step = 0.1)
   }
   else{
     length <- NULL
@@ -80,7 +80,7 @@ lineOpts <- function(title,element,width,isParent=FALSE,axis_ticks=FALSE){
                       ))
                     )
           ),
-          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[name][[1]]["size"][[1]]),
+          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[name][[1]]["size"][[1]], step = 0.1),
           tags$label("Color: "),
           jscolorInput(paste(element,"colour",sep="_"), theme_current[name][[1]]["colour"][[1]]),
           length,
@@ -99,23 +99,23 @@ rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, stri
   }
 
   if(strip_background){
-    panel_margin <- numericInput("panel_margin",'Facet Panel Margin (pt): ',value= theme_current$panel.margin)
+    panel_margin <- numericInput("panel_margin",'Facet Panel Margin (pt): ',value= theme_current$panel.margin, step = 0.1)
   }
   else{
     panel_margin <- NULL
   }
 
   if(legend_background){
-    legend_margin <- numericInput("legend_margin",'Legend Margin (pt): ',value= theme_current$legend.margin)
+    legend_margin <- numericInput("legend_margin",'Legend Margin (pt): ',value= theme_current$legend.margin, step = 0.1)
   }
   else{
     legend_margin <- NULL
   }
 
   if(legend_key){
-    key_size <- numericInput("legend_key_dimensions",'Key Size (pt): ',value= theme_current$legend.key.size)
-    key_height <- numericInput("legend_key_height",'Key Height (pt): ',value= theme_current$legend.key.height)
-    key_width <- numericInput("legend_key_width",'Key Width (pt): ',value= theme_current$legend.key.width)
+    key_size <- numericInput("legend_key_dimensions",'Key Size (pt): ',value= theme_current$legend.key.size, step = 0.1)
+    key_height <- numericInput("legend_key_height",'Key Height (pt): ',value= theme_current$legend.key.height, step = 0.1)
+    key_width <- numericInput("legend_key_width",'Key Width (pt): ',value= theme_current$legend.key.width, step = 0.1)
   }
   else{
     key_size <- NULL
@@ -137,7 +137,7 @@ rectOpts <- function(title,element,width,isParent=FALSE,panel_border=FALSE, stri
                   }
               }"
             )))),
-          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[element][[1]]["size"][[1]]),
+          numericInput(paste(element,"size",sep="_"),'Stroke (pt): ',value= theme_current[element][[1]]["size"][[1]], step = 0.1),
           tags$label("Fill: "),
           panel_fill,
           tags$label("Stroke: "),
@@ -175,16 +175,16 @@ fontOpts <- function(title,element,width,isParent=FALSE){
             options = list(
               dropdownParent = 'body'
             )),
-          numericInput(paste(element,"size",sep="_"),'Size: ',value= theme_current[element][[1]]["size"][[1]]),
+          numericInput(paste(element,"size",sep="_"),'Size: ',value= theme_current[element][[1]]["size"][[1]], step = 1),
           tags$label("Color: "),
           jscolorInput(paste(element,"colour",sep="_"), theme_current[element][[1]]["colour"][[1]]),
-          customSliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= value),
+          customSliderInput(paste(element,"hjust",sep="_"),'Horizontal Align: ', min = 0, max = 1, value= value, step = 0.01),
           numericInput(paste(element,"hjust_hidden",sep="_"),'',value=hidden),
-          customSliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= value),
+          customSliderInput(paste(element,"vjust",sep="_"),'Vertical Align: ', min = 0, max = 1, value= value, step = 0.01),
           numericInput(paste(element,"vjust_hidden",sep="_"),'',value=hidden),
-          customSliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 360, value= value),
+          customSliderInput(paste(element,"angle",sep="_"),'Angle: ', min = 0, max = 360, value= value, step = 0.1),
           numericInput(paste(element,"angle_hidden",sep="_"),'',value=hidden),
-          numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]]),
+          numericInput(paste(element,"lineheight",sep="_"),'Line Height: ',value= theme_current[element][[1]]["lineheight"][[1]], step = 0.1),
           checkboxInput(paste(element,"hide",sep="_"),"Remove Element",FALSE)
         )
   col
@@ -230,9 +230,9 @@ shinyUI(fluidPage(theme = "css/main.css",
                           "Scatter plot: Facet Grid" = 7,
                           "Histogram: 22 colours" = 8), selected = 3
           ),
-          numericInput('plotWidth', 'Plot Dimensions (w x h)', value = 600),
+          numericInput('plotWidth', 'Plot Dimensions (w x h)', value = 600, step = 1),
           div(class='dimensionx_x','x'),
-          numericInput('plotHeight', '', value = 400)
+          numericInput('plotHeight', '', value = 400, step = 1)
       )
     ),
     tabPanel("Global colour palette",
@@ -325,13 +325,13 @@ shinyUI(fluidPage(theme = "css/main.css",
         ),
         # div(id="legend_position_description")
         helpText("Or, you can enter a vector specifying Legend Position (0 to 1). Manual vector input takes precedence over the dropdown above. Delete both manual inputs to default back to the dropdown."),
-        numericInput("legend_position_x",NULL,value= NULL),
+        numericInput("legend_position_x",NULL,value= NULL, step = 0.01),
         div(class= 'comma',','),
-        numericInput("legend_position_y",NULL,value= NULL),
+        numericInput("legend_position_y",NULL,value= NULL, step = 0.01),
         helpText("For manual positions, optionally specify origin point as vector (0 to 1)"),
-        numericInput("legend_justification_x",NULL,value= NULL),
+        numericInput("legend_justification_x",NULL,value= NULL, step = 0.01),
         div(class = 'comma', ','),
-        numericInput("legend_justification_y",NULL,value= NULL)
+        numericInput("legend_justification_y",NULL,value= NULL, step = 0.01)
       )
 )
     ),
@@ -340,9 +340,9 @@ shinyUI(fluidPage(theme = "css/main.css",
       fontOpts("Legend Text","legend_text",3),
       column(3,
         h4("Text Alignment"),
-        customSliderInput("legend_title_align",'Title Align: ', min = 0, max = 1, value= NULL),
+        customSliderInput("legend_title_align",'Title Align: ', min = 0, max = 1, value= NULL, step = 0.01),
         numericInput('legend_title_align_hidden','',value=0),
-        customSliderInput("legend_text_align",'Text Align: ', min = 0, max = 1, value= NULL),
+        customSliderInput("legend_text_align",'Text Align: ', min = 0, max = 1, value= NULL, step = 0.01),
         numericInput('legend_text_align_hidden','',value=0)
         )
       ),
