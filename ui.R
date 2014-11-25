@@ -208,6 +208,9 @@ shinyUI(fluidPage(theme = "css/main.css",
     downloadButton('downloadData', 'R Script for theme (run every R session)'),
     downloadButton('installationScript', 'Installation script (run once)')
   ),
+  fluidRow(
+    a(href="https://github.com/bchartoff/ggShinyApp","View this project's code on github")
+  ),
   hr(),
   navlistPanel(widths = c(3,9),
     tabPanel("Theme Builder Settings",
