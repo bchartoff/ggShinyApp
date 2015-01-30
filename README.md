@@ -11,7 +11,7 @@ This application can be run two ways, either locally on your computer or as a ho
 - Run the following commands in your R terminal/ environment.
 
 ```
-install.packages('shiny','ggplot2','reshape2','RColorBrewer','plyr','stringr','extrafont')
+install.packages(c('shiny','ggplot2','reshape2','RColorBrewer','plyr','stringr','extrafont'))
 library(extrafont)
 font_import()
 loadfonts()
